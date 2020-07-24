@@ -2,6 +2,31 @@ use super::*;
 use super::literal::*;
 use std::ops::Mul;
 
+/// An element of the group algebra.
+/// 
+/// # Examples
+/// To use this, import
+/// ```
+/// use rsvalidity::terms::free_group_term::*;
+/// use rsvalidity::terms::literal::*;
+/// use rsvalidity::terms::*;
+/// ```
+/// Constructing a free group term goes like this.
+/// ```
+/// # use rsvalidity::terms::free_group_term::*;
+/// # use rsvalidity::terms::literal::*;
+/// let term = FreeGroupTerm::new(vec![lit('x'), lit('y')]);
+/// ```
+/// In this case, `term` encodes the element xy of a free group.
+/// 
+/// Terms constructed using `FreeGrouPTerm::new` automatically get reduced:
+/// ```
+/// # use rsvalidity::terms::free_group_term::*;
+/// # use rsvalidity::terms::literal::*;
+/// # use rsvalidity::terms::*;
+/// let term = FreeGroupTerm::new(vec![lit('x'), lit('x').inverse()]);
+/// assert_eq!(String::from("e"), term.to_string());
+/// ```
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct FreeGroupTerm {
     pub literals: Vec<literal::Literal>
@@ -53,6 +78,9 @@ impl ToString for FreeGroupTerm {
         let mut result = String::from("");
         for l in &self.literals {
             result.push_str(&l.to_string());
+        }
+        if result == "" {
+            return String::from("e");
         }
         return result;
     }
