@@ -7,6 +7,16 @@ pub struct Literal {
     pub is_inverted: bool
 }
 
+impl Literal {
+    fn new(character: char, id: usize, is_inverted: bool) {
+        Literal {
+            character: character,
+            id: id,
+            is_inverted: is_inverted
+        };
+    }
+}
+
 /// shorthand constructor for a literal
 /// 
 /// sets `id` to zero and `is_inverted` to false.
