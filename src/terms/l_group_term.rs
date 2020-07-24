@@ -113,12 +113,12 @@ impl Term for LGroupTerm {
 }
 
 impl Reducable for LGroupTerm {
-    fn reduced(self) -> LGroupTerm{
+    fn reduced(self) -> LGroupTerm {
         match self {
             LGroupTerm::Atom(x) => atom_reduced(x),
-            LGroupTerm::Meet(xs) => meet_reduced(xs),
-            LGroupTerm::Join(xs) => join_reduced(xs),
-            LGroupTerm::Prod(xs) => prod_reduced(xs)
+            LGroupTerm::Meet(xs) => meet_reduced(xs).expect("Reducing failed."),
+            LGroupTerm::Join(xs) => join_reduced(xs).expect("Reducing failed."),
+            LGroupTerm::Prod(xs) => prod_reduced(xs).expect("Reducing failed.")
         }
     }
 }
