@@ -20,4 +20,5 @@ pub mod terms {
     pub mod free_group_term;
     pub mod literal;
     pub mod l_group_term;
+    pub mod l_group_term_reducing;
 }
