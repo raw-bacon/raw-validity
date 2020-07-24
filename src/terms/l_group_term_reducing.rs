@@ -3,10 +3,12 @@ use super::free_group_term::*;
 use super::*;
 use std::collections::BTreeSet;
 
+/// reduces the atom by reducing its associated free group term
 pub (super) fn atom_reduced(x: FreeGroupTerm) -> LGroupTerm {
     LGroupTerm::Atom(x.reduced())
 }
 
+/// recursively absorbs inner meets
 pub (super) fn meet_reduced(xs: BTreeSet<LGroupTerm>) -> LGroupTerm {
     let mut new_meetands = xs.clone();
     let mut old_meetands: BTreeSet<LGroupTerm>;
@@ -47,6 +49,7 @@ fn contains_meets(xs: &BTreeSet<LGroupTerm>) -> bool {
     false
 }
 
+/// recursively absorbs inner joins
 pub (super) fn join_reduced(xs: BTreeSet<LGroupTerm>) -> LGroupTerm {
     let mut new_joinands = xs.clone();
     let mut old_joinands: BTreeSet<LGroupTerm>;
@@ -87,6 +90,7 @@ fn contains_joins(xs: &BTreeSet<LGroupTerm>) -> bool {
     false
 }
 
+/// recursively absorbs products, then multiplies successive atoms as free group terms
 pub (super) fn prod_reduced(xs: Vec<LGroupTerm>) -> LGroupTerm {
     // TODO
     LGroupTerm::Prod(xs)
