@@ -11,6 +11,7 @@ impl Term for FreeGroupTerm {
         for x in &self.literals {
             result.push(x.inverse())
         }
+        result.reverse();
         FreeGroupTerm {
             literals: result
         }
@@ -53,7 +54,7 @@ mod tests {
     use super::literal::*;
 
      #[test]
-    fn test_reduce_free_group_term() {
+    fn test_reduce() {
         let x = lit('x');
         let x_inv = lit('x').inverse();
         let y = lit('y');
@@ -64,10 +65,20 @@ mod tests {
     }
 
     #[test]
-    fn test_free_group_term_to_string() {
+    fn test_to_string() {
         let term = FreeGroupTerm {
             literals: vec![lit('x'), lit('y'), lit('z')]
         };
         assert_eq!("xyz", term.to_string());
+    }
+
+    #[test]
+    fn test_inverse() {
+        let x = lit('x');
+        let y = lit('y');
+        let z = lit('z');
+        let term = FreeGroupTerm { literals: vec![x,y,z] };
+        let other_term = FreeGroupTerm { literals: vec![z.inverse(), y.inverse(), x.inverse()] };
+        assert_eq!(other_term, term.inverse())
     }
 }
