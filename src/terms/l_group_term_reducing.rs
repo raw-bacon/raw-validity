@@ -14,17 +14,27 @@ pub (super) fn meet_reduced(xs: BTreeSet<LGroupTerm>) -> LGroupTerm {
     while not_done {
         old_meetands = new_meetands.clone();
         new_meetands = BTreeSet::new();
-        for x in old_meetands.iter() {
+        for x in old_meetands {
             match x {
                 LGroupTerm::Meet(ys) => {
-                    for y in ys.iter() { new_meetands.insert(y.clone().reduced()); }
+                    for y in ys { new_meetands.insert(y.clone().reduced()); }
                 },
                 term => { new_meetands.insert(term.clone().reduced()); }
             }
         }
         not_done = contains_meets(&new_meetands);
     }
-    LGroupTerm::Meet(new_meetands)
+    match new_meetands.len() {
+        0 => panic!("Unexpected empty meet"),
+        1 => {
+            let option = new_meetands.iter().next();
+            match option {
+                None => panic!("ultra-unexpected empty meet"),
+                Some(x) => x.clone()
+            }
+        }
+        _ => LGroupTerm::Meet(new_meetands)
+    }
 }
 
 fn contains_meets(xs: &BTreeSet<LGroupTerm>) -> bool {
@@ -44,17 +54,27 @@ pub (super) fn join_reduced(xs: BTreeSet<LGroupTerm>) -> LGroupTerm {
     while not_done {
         old_joinands = new_joinands.clone();
         new_joinands = BTreeSet::new();
-        for x in old_joinands.iter() {
+        for x in old_joinands {
             match x {
                 LGroupTerm::Join(ys) => {
-                    for y in ys.iter() { new_joinands.insert(y.clone().reduced()); }
+                    for y in ys { new_joinands.insert(y.clone().reduced()); }
                 },
                 term => { new_joinands.insert(term.clone().reduced()); }
             }
         }
         not_done = contains_joins(&new_joinands);
     }
-    LGroupTerm::Join(new_joinands)
+    match new_joinands.len() {
+        0 => panic!("Unexpected empty join"),
+        1 => {
+            let option = new_joinands.iter().next();
+            match option {
+                None => panic!("ultra-unexpected empty meet"),
+                Some(x) => x.clone()
+            }
+        }
+        _ => LGroupTerm::Join(new_joinands)
+    }
 }
 
 fn contains_joins(xs: &BTreeSet<LGroupTerm>) -> bool {
