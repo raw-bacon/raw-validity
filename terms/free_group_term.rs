@@ -7,23 +7,23 @@ use std::ops::Mul;
 /// # Examples
 /// To use this, import
 /// ```
-/// use rsvalidity::terms::free_group_term::*;
-/// use rsvalidity::terms::literal::*;
-/// use rsvalidity::terms::*;
+/// use terms::free_group_term::*;
+/// use terms::literal::*;
+/// use terms::*;
 /// ```
 /// Constructing a free group term goes like this.
 /// ```
-/// # use rsvalidity::terms::free_group_term::*;
-/// # use rsvalidity::terms::literal::*;
+/// # use terms::free_group_term::*;
+/// # use terms::literal::*;
 /// let term = FreeGroupTerm::new(vec![lit('x'), lit('y')]);
 /// ```
 /// In this case, `term` encodes the element xy of a free group.
 /// 
 /// Terms constructed using `FreeGrouPTerm::new` automatically get reduced:
 /// ```
-/// # use rsvalidity::terms::free_group_term::*;
-/// # use rsvalidity::terms::literal::*;
-/// # use rsvalidity::terms::*;
+/// # use terms::free_group_term::*;
+/// # use terms::literal::*;
+/// # use terms::*;
 /// let term = FreeGroupTerm::new(vec![lit('x'), lit('x').inverse()]);
 /// assert_eq!(String::from("e"), term.to_string());
 /// ```

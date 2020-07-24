@@ -10,23 +10,23 @@ use super::l_group_term_reducing::*;
 /// # Examples
 /// To use this, we want to do some imports:
 /// ```
-/// use rsvalidity::terms::free_group_term::*;
-/// use rsvalidity::terms::literal::*;
-/// use rsvalidity::terms::l_group_term::*;
+/// use terms::free_group_term::*;
+/// use terms::literal::*;
+/// use terms::l_group_term::*;
 /// ```
 /// An `LGroupTerm` be either an `Atom`, i.e.,
 /// ```
-/// # use rsvalidity::terms::free_group_term::*;
-/// # use rsvalidity::terms::literal::*;
-/// # use rsvalidity::terms::l_group_term::*;
+/// # use terms::free_group_term::*;
+/// # use terms::literal::*;
+/// # use terms::l_group_term::*;
 /// let x = FreeGroupTerm::from(lit('x'));
 /// let lGroupTerm = LGroupTerm::Atom(x);
 /// ```
 /// a `Meet`, a `Join`, or a `Product`. `Meet`s and `Join`s take `BTreeSet`s as arguments:
 /// ```
-/// # use rsvalidity::terms::free_group_term::*;
-/// # use rsvalidity::terms::literal::*;
-/// # use rsvalidity::terms::l_group_term::*;
+/// # use terms::free_group_term::*;
+/// # use terms::literal::*;
+/// # use terms::l_group_term::*;
 /// use std::collections::BTreeSet;
 /// let mut meetands = BTreeSet::new();
 /// meetands.insert(LGroupTerm::from(lit('x')));
@@ -35,9 +35,9 @@ use super::l_group_term_reducing::*;
 /// ```
 /// whereas `Product`s take `Vec<LGroupTerm>`s:
 /// ```
-/// # use rsvalidity::terms::free_group_term::*;
-/// # use rsvalidity::terms::literal::*;
-/// # use rsvalidity::terms::l_group_term::*;
+/// # use terms::free_group_term::*;
+/// # use terms::literal::lit;
+/// # use terms::l_group_term::*;
 /// let factors = vec![LGroupTerm::from(lit('x')), LGroupTerm::from(lit('y'))];
 /// let product = LGroupTerm::Prod(factors);
 /// ```

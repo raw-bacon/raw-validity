@@ -25,7 +25,7 @@ impl Literal {
 /// # Examples
 /// Basic usage:
 /// ```
-/// use rsvalidity::terms::literal::*;
+/// use terms::literal::*;
 /// let literal1 = lit('x');
 /// let literal2 = Literal::new('x', 0, false);
 /// assert_eq!(literal1, literal2);
