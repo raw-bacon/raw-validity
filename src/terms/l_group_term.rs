@@ -7,15 +7,22 @@ use super::l_group_term_reducing::*;
 
 /// An element the term algebra of l-groups.
 /// 
-/// Can be either an atom, i.e.,
+/// # Examples
+/// To use this, we want to do some imports:
 /// ```
 /// use rsvalidity::terms::free_group_term::*;
 /// use rsvalidity::terms::literal::*;
 /// use rsvalidity::terms::l_group_term::*;
+/// ```
+/// An `LGroupTerm` be either an `Atom`, i.e.,
+/// ```
+/// # use rsvalidity::terms::free_group_term::*;
+/// # use rsvalidity::terms::literal::*;
+/// # use rsvalidity::terms::l_group_term::*;
 /// let x = FreeGroupTerm::from(lit('x'));
 /// let lGroupTerm = LGroupTerm::Atom(x);
 /// ```
-/// a meet, a join, or a product. Meets and joins take sets:
+/// a `Meet`, a `Join`, or a `Product`. `Meet`s and `Join`s take `BTreeSet`s as arguments:
 /// ```
 /// # use rsvalidity::terms::free_group_term::*;
 /// # use rsvalidity::terms::literal::*;
@@ -26,7 +33,7 @@ use super::l_group_term_reducing::*;
 /// meetands.insert(LGroupTerm::from(lit('y')));
 /// let meet = LGroupTerm::Meet(meetands);
 /// ```
-/// whereas products take vectors:
+/// whereas `Product`s take `Vec<LGroupTerm>`s:
 /// ```
 /// # use rsvalidity::terms::free_group_term::*;
 /// # use rsvalidity::terms::literal::*;
@@ -34,9 +41,9 @@ use super::l_group_term_reducing::*;
 /// let factors = vec![LGroupTerm::from(lit('x')), LGroupTerm::from(lit('y'))];
 /// let product = LGroupTerm::Prod(factors);
 /// ```
-/// This models associativity of meets, joins, and products, but takes into
-/// account the non-commutativity of the products (but also the commutativity
-/// of meets and joins).
+/// This models associativity of meets, joins, and products, and takes into
+/// account the non-commutativity of the products, but also the commutativity
+/// of meets and joins.
 #[derive(Debug, Clone, Eq, PartialEq, PartialOrd, Ord)]
 pub enum LGroupTerm {
     Atom(FreeGroupTerm),
