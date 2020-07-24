@@ -9,7 +9,7 @@ pub (super) fn atom_reduced(x: FreeGroupTerm) -> LGroupTerm {
 }
 
 /// recursively absorbs inner meets
-pub (super) fn meet_reduced(xs: BTreeSet<LGroupTerm>) -> LGroupTerm {
+pub (super) fn meet_reduced(xs: BTreeSet<LGroupTerm>) -> Result<LGroupTerm, String> {
     let mut new_meetands = xs.clone();
     let mut old_meetands: BTreeSet<LGroupTerm>;
     let mut not_done = contains_meets(&xs);
@@ -26,16 +26,17 @@ pub (super) fn meet_reduced(xs: BTreeSet<LGroupTerm>) -> LGroupTerm {
         }
         not_done = contains_meets(&new_meetands);
     }
+
     match new_meetands.len() {
-        0 => panic!("Unexpected empty meet"),
+        0 => Err(String::from("Unexpected empty meet")),
         1 => {
             let option = new_meetands.iter().next();
             match option {
-                None => panic!("ultra-unexpected empty meet"),
-                Some(x) => x.clone()
+                None => Err(String::from("ultra-unexpected empty meet")),
+                Some(x) => Ok(x.clone())
             }
         }
-        _ => LGroupTerm::Meet(new_meetands)
+        _ => Ok(LGroupTerm::Meet(new_meetands))
     }
 }
 
@@ -50,7 +51,7 @@ fn contains_meets(xs: &BTreeSet<LGroupTerm>) -> bool {
 }
 
 /// recursively absorbs inner joins
-pub (super) fn join_reduced(xs: BTreeSet<LGroupTerm>) -> LGroupTerm {
+pub (super) fn join_reduced(xs: BTreeSet<LGroupTerm>) -> Result<LGroupTerm, String> {
     let mut new_joinands = xs;
     let mut old_joinands: BTreeSet<LGroupTerm>;
     let mut not_done = contains_joins(&new_joinands);
@@ -68,15 +69,15 @@ pub (super) fn join_reduced(xs: BTreeSet<LGroupTerm>) -> LGroupTerm {
         not_done = contains_joins(&new_joinands);
     }
     match new_joinands.len() {
-        0 => panic!("Unexpected empty join"),
+        0 => Err(String::from("Unexpected empty join")),
         1 => {
             let option = new_joinands.iter().next();
             match option {
-                None => panic!("ultra-unexpected empty meet"),
-                Some(x) => x.clone()
+                None => Err(String::from("ultra-unexpected empty meet")),
+                Some(x) => Ok(x.clone())
             }
         }
-        _ => LGroupTerm::Join(new_joinands)
+        _ => Ok(LGroupTerm::Join(new_joinands))
     }
 }
 
@@ -91,7 +92,7 @@ fn contains_joins(xs: &BTreeSet<LGroupTerm>) -> bool {
 }
 
 /// recursively absorbs products, then multiplies successive atoms as free group terms
-pub (super) fn prod_reduced(xs: Vec<LGroupTerm>) -> LGroupTerm {
+pub (super) fn prod_reduced(xs: Vec<LGroupTerm>) -> Result<LGroupTerm, String> {
     let mut new_factors = xs;
     let mut old_factors: Vec<LGroupTerm>;
     let mut not_done = contains_prods(&new_factors);
@@ -122,15 +123,15 @@ pub (super) fn prod_reduced(xs: Vec<LGroupTerm>) -> LGroupTerm {
     }
 
     match new_factors.len() {
-        0 => LGroupTerm::from(IDENTITY.clone()),
+        0 => Ok(LGroupTerm::from(IDENTITY.clone())),
         1 => {
             let option = new_factors.iter().next();
             match option {
-                None => panic!(""),
-                Some(x) => x.clone()
+                None => Err(String::from("I have no words")),
+                Some(x) => Ok(x.clone())
             }
         }
-        _ => LGroupTerm::Prod(new_factors)
+        _ => Ok(LGroupTerm::Prod(new_factors))
     }
 }
 
