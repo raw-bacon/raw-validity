@@ -14,6 +14,8 @@ impl FreeGroupTerm {
     }
 }
 
+pub static IDENTITY: FreeGroupTerm = FreeGroupTerm { literals: Vec::new() };
+
 impl Term for FreeGroupTerm {
     fn inverse(&self) -> FreeGroupTerm {
         let mut result = Vec::new();
@@ -51,7 +53,6 @@ impl ToString for FreeGroupTerm {
     }
 }
 
-pub static IDENTITY: FreeGroupTerm = FreeGroupTerm { literals: Vec::new() };
 
 impl Reducable for FreeGroupTerm {
     /// Reduces a free group term according to the rule aa^-1 = e.
