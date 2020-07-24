@@ -8,7 +8,7 @@ pub struct FreeGroupTerm {
 }
 
 impl FreeGroupTerm {
-    fn new(literals: Vec<literal::Literal>) -> FreeGroupTerm {
+    pub fn new(literals: Vec<literal::Literal>) -> FreeGroupTerm {
         FreeGroupTerm { literals: literals }.reduced()
     }
 }

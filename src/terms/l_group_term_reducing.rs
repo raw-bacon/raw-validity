@@ -92,8 +92,63 @@ fn contains_joins(xs: &BTreeSet<LGroupTerm>) -> bool {
 
 /// recursively absorbs products, then multiplies successive atoms as free group terms
 pub (super) fn prod_reduced(xs: Vec<LGroupTerm>) -> LGroupTerm {
-    // TODO
-    LGroupTerm::Prod(xs)
+    let mut new_factors = xs.clone();
+    let mut old_factors: Vec<LGroupTerm>;
+    let mut not_done = contains_prods(&xs);
+    while not_done {
+        old_factors = new_factors.clone();
+        new_factors = Vec::new();
+        for x in old_factors {
+            match x {
+                LGroupTerm::Prod(ys) => {
+                    for y in ys { new_factors.push(y.clone().reduced()); }
+                },
+                term => { new_factors.push(term.clone().reduced()); }
+            }
+        }
+        not_done = contains_prods(&new_factors);
+    }
+
+    // removing adjacent atoms
+    let mut index = 0;
+    while index < new_factors.len() - 1 {
+        if is_atom(&new_factors[index]) && is_atom(&new_factors[index + 1]) {
+            let left = new_factors.remove(index);
+            let right = new_factors.remove(index);
+            new_factors.insert(index, left * right);
+        } else {
+            index += 1;
+        }
+    }
+
+    match new_factors.len() {
+        0 => LGroupTerm::from(IDENTITY.clone()),
+        1 => {
+            let option = new_factors.iter().next();
+            match option {
+                None => panic!(""),
+                Some(x) => x.clone()
+            }
+        }
+        _ => LGroupTerm::Prod(new_factors)
+    }
+}
+
+fn is_atom(x: &LGroupTerm) -> bool {
+    match x {
+        LGroupTerm::Atom(_) => true,
+        _ => false
+    }
+}
+
+fn contains_prods(xs: &Vec<LGroupTerm>) -> bool {
+    for x in xs {
+        match x {
+            LGroupTerm::Prod(_) => { return true; },
+            _ => {}
+        }
+    }
+    false
 }
 
 #[cfg(test)]
@@ -128,5 +183,11 @@ mod tests {
         goal_meetands.insert(w);
         let goal = LGroupTerm::Meet(goal_meetands);
         assert_eq!(goal, meet.reduced());
+    }
+
+    #[test]
+    fn test_prod_reduced() {
+        let result = LGroupTerm::Prod(vec![LGroupTerm::from(lit('x')), LGroupTerm::from(lit('y'))]);
+        assert_eq!(LGroupTerm::Atom(FreeGroupTerm::new(vec![lit('x'), lit('y')])), result.reduced())
     }
 }

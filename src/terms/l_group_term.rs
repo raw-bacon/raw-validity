@@ -29,9 +29,13 @@ impl Mul for LGroupTerm {
     type Output = LGroupTerm;
 
     fn mul(self, other: LGroupTerm) -> LGroupTerm {
-        LGroupTerm::Prod(vec![self, other]).reduced()
+        match (self.clone(), other.clone()) {
+            (LGroupTerm::Atom(x), LGroupTerm::Atom(y)) => LGroupTerm::Atom(x * y),
+            _ => LGroupTerm::Prod(vec![self, other]).reduced()
+        }
     }
 }
+
 
 impl Meet for LGroupTerm {
     type Output = LGroupTerm;
@@ -146,5 +150,12 @@ mod tests {
         let prod_inverse = LGroupTerm::Prod(vec![z_inv, inverse_of_meet]);
 
         assert_eq!(prod_inverse, prod.inverse());
+    }
+
+    #[test]
+    fn test_mul_atoms() {
+        let x = LGroupTerm::from(lit('x'));
+        let y = LGroupTerm::from(lit('y'));
+        assert_eq!(LGroupTerm::Atom(FreeGroupTerm::new(vec![lit('x'), lit('y')])), x * y)
     }
 }
