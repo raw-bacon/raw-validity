@@ -1,5 +1,6 @@
 use super::*;
 
+/// The smallest term (apart from the identity).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Literal {
     pub character: char,
@@ -21,7 +22,8 @@ impl Literal {
 /// 
 /// sets `id` to zero and `is_inverted` to false.
 /// 
-/// # Example
+/// # Examples
+/// Basic usage:
 /// ```
 /// use rsvalidity::terms::literal::*;
 /// let literal1 = lit('x');
