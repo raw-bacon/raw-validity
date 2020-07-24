@@ -4,7 +4,17 @@ pub mod terms {
     }
 
     pub trait Reducable {
-        fn reduce(&mut self);
+        fn reduced(self) -> Self;
+    }
+
+    pub trait Meet<Rhs=Self> {
+        type Output;
+        fn meet(self, other: Rhs) -> Self::Output;
+    }
+
+    pub trait Join<Rhs=Self> {
+        type Output;
+        fn join(self, other: Rhs) -> Self::Output;
     }
 
     pub mod free_group_term;
