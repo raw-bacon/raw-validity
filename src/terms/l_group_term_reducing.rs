@@ -188,6 +188,6 @@ mod tests {
     #[test]
     fn test_prod_reduced() {
         let result = LGroupTerm::Prod(vec![LGroupTerm::from(lit('x')), LGroupTerm::from(lit('y'))]);
-        assert_eq!(LGroupTerm::Atom(FreeGroupTerm::new(vec![lit('x'), lit('y')])), result.reduced())
+        assert_eq!(LGroupTerm::Atom(FreeGroupTerm::new(vec![lit('x'), lit('y')])), result.reduced());
     }
 }
