@@ -5,6 +5,38 @@ use std::collections::BTreeSet;
 use std::ops::Mul;
 use super::l_group_term_reducing::*;
 
+/// An element the term algebra of l-groups.
+/// 
+/// Can be either an atom, i.e.,
+/// ```
+/// use rsvalidity::terms::free_group_term::*;
+/// use rsvalidity::terms::literal::*;
+/// use rsvalidity::terms::l_group_term::*;
+/// let x = FreeGroupTerm::from(lit('x'));
+/// let lGroupTerm = LGroupTerm::Atom(x);
+/// ```
+/// a meet, a join, or a product. Meets and joins take sets:
+/// ```
+/// # use rsvalidity::terms::free_group_term::*;
+/// # use rsvalidity::terms::literal::*;
+/// # use rsvalidity::terms::l_group_term::*;
+/// use std::collections::BTreeSet;
+/// let mut meetands = BTreeSet::new();
+/// meetands.insert(LGroupTerm::from(lit('x')));
+/// meetands.insert(LGroupTerm::from(lit('y')));
+/// let meet = LGroupTerm::Meet(meetands);
+/// ```
+/// whereas products take vectors:
+/// ```
+/// # use rsvalidity::terms::free_group_term::*;
+/// # use rsvalidity::terms::literal::*;
+/// # use rsvalidity::terms::l_group_term::*;
+/// let factors = vec![LGroupTerm::from(lit('x')), LGroupTerm::from(lit('y'))];
+/// let product = LGroupTerm::Prod(factors);
+/// ```
+/// This models associativity of meets, joins, and products, but takes into
+/// account the non-commutativity of the products (but also the commutativity
+/// of meets and joins).
 #[derive(Debug, Clone, Eq, PartialEq, PartialOrd, Ord)]
 pub enum LGroupTerm {
     Atom(FreeGroupTerm),
