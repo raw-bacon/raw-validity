@@ -92,9 +92,7 @@ mod tests {
 
     #[test]
     fn test_to_string() {
-        let term = FreeGroupTerm {
-            literals: vec![lit('x'), lit('y'), lit('z')]
-        };
+        let term = FreeGroupTerm::new(vec![lit('x'), lit('y'), lit('z')]);
         assert_eq!("xyz", term.to_string());
     }
 

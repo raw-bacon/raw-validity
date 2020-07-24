@@ -8,12 +8,12 @@ pub struct Literal {
 }
 
 impl Literal {
-    fn new(character: char, id: usize, is_inverted: bool) {
+    pub fn new(character: char, id: usize, is_inverted: bool) -> Literal {
         Literal {
             character: character,
             id: id,
             is_inverted: is_inverted
-        };
+        }
     }
 }
 
@@ -25,11 +25,7 @@ impl Literal {
 /// ```
 /// use rsvalidity::terms::literal::*;
 /// let literal1 = lit('x');
-/// let literal2 = Literal {
-///     character: 'x',
-///     id: 0,
-///     is_inverted: false
-/// };
+/// let literal2 = Literal::new('x', 0, false);
 /// assert_eq!(literal1, literal2);
 /// ```
 pub fn lit(c: char) -> Literal {
@@ -76,11 +72,7 @@ mod tests {
     fn test_literal_to_string() {
         assert_eq!("x", lit('x').to_string());
         assert_eq!("X", lit ('x').inverse().to_string());
-        let l = Literal {
-            character: 'x',
-            id: 31,
-            is_inverted: true
-        };
+        let l = Literal::new('x', 31, true);
         assert_eq!("X31", l.to_string());
     }
 }
