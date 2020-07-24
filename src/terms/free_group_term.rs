@@ -2,7 +2,7 @@ use super::*;
 use super::literal::*;
 use std::ops::Mul;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct FreeGroupTerm {
     pub literals: Vec<literal::Literal>
 }
@@ -60,7 +60,6 @@ impl ToString for FreeGroupTerm {
 
 
 impl Reducable for FreeGroupTerm {
-    /// Reduces a free group term according to the rule aa^-1 = e.
     fn reduced(self) -> FreeGroupTerm {
         let mut index: usize = 0;
         let mut reduced_at_zero = false;

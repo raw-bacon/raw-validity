@@ -19,9 +19,9 @@ pub (super) fn meet_reduced(xs: BTreeSet<LGroupTerm>) -> LGroupTerm {
         for x in old_meetands {
             match x {
                 LGroupTerm::Meet(ys) => {
-                    for y in ys { new_meetands.insert(y.clone().reduced()); }
+                    for y in ys { new_meetands.insert(y.reduced()); }
                 },
-                term => { new_meetands.insert(term.clone().reduced()); }
+                term => { new_meetands.insert(term.reduced()); }
             }
         }
         not_done = contains_meets(&new_meetands);
@@ -51,18 +51,18 @@ fn contains_meets(xs: &BTreeSet<LGroupTerm>) -> bool {
 
 /// recursively absorbs inner joins
 pub (super) fn join_reduced(xs: BTreeSet<LGroupTerm>) -> LGroupTerm {
-    let mut new_joinands = xs.clone();
+    let mut new_joinands = xs;
     let mut old_joinands: BTreeSet<LGroupTerm>;
-    let mut not_done = contains_joins(&xs);
+    let mut not_done = contains_joins(&new_joinands);
     while not_done {
         old_joinands = new_joinands.clone();
         new_joinands = BTreeSet::new();
         for x in old_joinands {
             match x {
                 LGroupTerm::Join(ys) => {
-                    for y in ys { new_joinands.insert(y.clone().reduced()); }
+                    for y in ys { new_joinands.insert(y.reduced()); }
                 },
-                term => { new_joinands.insert(term.clone().reduced()); }
+                term => { new_joinands.insert(term.reduced()); }
             }
         }
         not_done = contains_joins(&new_joinands);
@@ -92,18 +92,18 @@ fn contains_joins(xs: &BTreeSet<LGroupTerm>) -> bool {
 
 /// recursively absorbs products, then multiplies successive atoms as free group terms
 pub (super) fn prod_reduced(xs: Vec<LGroupTerm>) -> LGroupTerm {
-    let mut new_factors = xs.clone();
+    let mut new_factors = xs;
     let mut old_factors: Vec<LGroupTerm>;
-    let mut not_done = contains_prods(&xs);
+    let mut not_done = contains_prods(&new_factors);
     while not_done {
         old_factors = new_factors.clone();
         new_factors = Vec::new();
         for x in old_factors {
             match x {
                 LGroupTerm::Prod(ys) => {
-                    for y in ys { new_factors.push(y.clone().reduced()); }
+                    for y in ys { new_factors.push(y.reduced()); }
                 },
-                term => { new_factors.push(term.clone().reduced()); }
+                term => { new_factors.push(term.reduced()); }
             }
         }
         not_done = contains_prods(&new_factors);
