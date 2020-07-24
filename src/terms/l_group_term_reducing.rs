@@ -38,8 +38,33 @@ fn contains_meets(xs: &BTreeSet<LGroupTerm>) -> bool {
 }
 
 pub (super) fn join_reduced(xs: BTreeSet<LGroupTerm>) -> LGroupTerm {
-    // TODO
-    LGroupTerm::Join(xs)
+    let mut new_joinands = xs.clone();
+    let mut old_joinands: BTreeSet<LGroupTerm>;
+    let mut not_done = contains_joins(&xs);
+    while not_done {
+        old_joinands = new_joinands.clone();
+        new_joinands = BTreeSet::new();
+        for x in old_joinands.iter() {
+            match x {
+                LGroupTerm::Join(ys) => {
+                    for y in ys.iter() { new_joinands.insert(y.clone().reduced()); }
+                },
+                term => { new_joinands.insert(term.clone().reduced()); }
+            }
+        }
+        not_done = contains_joins(&new_joinands);
+    }
+    LGroupTerm::Join(new_joinands)
+}
+
+fn contains_joins(xs: &BTreeSet<LGroupTerm>) -> bool {
+    for x in xs {
+        match x {
+            LGroupTerm::Join(_) => { return true; },
+            _ => {}
+        }
+    }
+    false
 }
 
 pub (super) fn prod_reduced(xs: Vec<LGroupTerm>) -> LGroupTerm {
