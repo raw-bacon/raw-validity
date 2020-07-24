@@ -8,7 +8,3 @@ edition = "2018"
 
 [dependencies]
 terms = { path = "../terms"}
-
-[lib]
-name = "parsing"
-path = "lib.rs"
