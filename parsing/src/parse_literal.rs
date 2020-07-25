@@ -11,7 +11,7 @@ use terms::literal::*;
 /// let literal = Literal::new('x', 31, true);
 /// assert_eq!(Ok(literal), parse_literal::parse(string));
 /// ```
-pub fn pars(s: String) -> Result<Literal, String> {
+pub fn parse(s: String) -> Result<Literal, String> {
     let l = s.len();
     if l == 0 {
         return Err(String::from("empty literal does not exist"));
