@@ -1,6 +1,6 @@
 use super::*;
 use super::literal::*;
-use std::ops::Mul;
+use std::ops::{Mul, MulAssign};
 
 /// An element of the group algebra.
 /// 
@@ -73,6 +73,15 @@ impl Mul for FreeGroupTerm {
     }
 }
 
+impl MulAssign for FreeGroupTerm {
+    fn mul_assign(&mut self, rhs: FreeGroupTerm) {
+        for x in rhs.literals {
+            self.literals.push(x);
+        }
+        *self = FreeGroupTerm::new(self.literals.clone());
+    }
+}
+
 impl ToString for FreeGroupTerm {
     fn to_string(&self) -> String {
         let mut result = String::from("");
@@ -142,5 +151,12 @@ mod tests {
         let x = FreeGroupTerm::new(vec![lit('x')]);
         let x_inv = FreeGroupTerm::new(vec![lit('x').inverse()]);
         assert_eq!(IDENTITY, x*x_inv);
+    }
+
+    #[test]
+    fn test_mul_assign() {
+        let mut term = FreeGroupTerm::from(lit('x').inverse());
+        term *= FreeGroupTerm::from(lit('x'));
+        assert_eq!(FreeGroupTerm::new(Vec::new()), term);
     }
 }
