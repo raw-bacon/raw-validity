@@ -123,6 +123,34 @@ impl Reducable for LGroupTerm {
     }
 }
 
+impl ToString for LGroupTerm {
+    fn to_string(&self) -> String {
+        let delimiter: char;
+        let mut elements = Vec::new();
+        match self {
+            LGroupTerm::Atom(x) => return x.to_string(),
+            LGroupTerm::Meet(xs) => {
+                delimiter = '^';
+                for x in xs { elements.push(x); }
+            },
+            LGroupTerm::Join(xs) => {
+                delimiter = 'v';
+                for x in xs { elements.push(x); }
+            },
+            LGroupTerm::Prod(xs) => {
+                delimiter = '*';
+                for x in xs { elements.push(x); }
+            }
+        }
+
+        let mut string = format!("{}", elements[0].to_string());
+        for i in 1 .. elements.len() {
+            string.push_str(format!(" {} {}", delimiter, elements[i].to_string()).as_str());
+        }
+        return format!("({})", string);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -196,5 +224,18 @@ mod tests {
         let x = LGroupTerm::from(lit('x'));
         let y = LGroupTerm::from(lit('y'));
         assert_eq!(LGroupTerm::Atom(FreeGroupTerm::new(vec![lit('x'), lit('y')])), x * y)
+    }
+
+    #[test]
+    fn test_to_string() {
+        let mut inner_meetands = BTreeSet::new();
+        inner_meetands.insert(LGroupTerm::from(lit('x')));
+        inner_meetands.insert(LGroupTerm::from(lit('y')));
+        let inner_meet = LGroupTerm::Meet(inner_meetands);
+        let mut meetands = BTreeSet::new();
+        meetands.insert(inner_meet);
+        meetands.insert(LGroupTerm::from(lit('z')));
+        let meet = LGroupTerm::Meet(meetands);
+        assert_eq!(String::from("(z ^ (x ^ y))"), meet.to_string());
     }
 }
