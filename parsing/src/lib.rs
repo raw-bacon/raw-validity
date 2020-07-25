@@ -1,4 +1,4 @@
-mod parse_literal;
+pub mod parse_literal;
 
 #[cfg(test)]
 mod tests {
