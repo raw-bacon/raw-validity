@@ -48,15 +48,3 @@ fn without_first(string: String) -> String {
     
     return result;
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_parse_literal() {
-        let s = String::from("X31");
-        let expected = Literal::new('x', 31, true);
-        assert_eq!(expected, parse(s).expect(""));
-    }
-}
