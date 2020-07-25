@@ -1,3 +1,5 @@
+mod parse_literal;
+
 #[cfg(test)]
 mod tests {
     #[test]
