@@ -23,8 +23,8 @@ use super::parse_literal;
 /// let term = FreeGroupTerm::new(vec![x, y, z]);
 /// assert_eq!(Ok(term), parse_free_group_term::parse(string));
 /// ```
-pub fn parse(s: String) -> Result<FreeGroupTerm, String> {
-    if s == String::from("e") {
+pub fn parse(s: &String) -> Result<FreeGroupTerm, String> {
+    if *s == String::from("e") {
         return Ok(FreeGroupTerm::new(Vec::new()));
     }
     let mut literals = Vec::new();
@@ -72,6 +72,6 @@ mod tests {
         let y = Literal::new('y', 0, false);
         let z = Literal::new('z', 39, false);
         let term = FreeGroupTerm::new(vec![x, y, z]);
-        assert_eq!(Ok(term), super::parse(string));
+        assert_eq!(Ok(term), super::parse(&string));
     }
 }
