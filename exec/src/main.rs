@@ -1,7 +1,7 @@
 use std::io;
 
 fn main() -> io::Result<()> {
-    println!("Hello, world!");
+    println!("What app would ");
     let mut buffer = String::new();    
     io::stdin().read_line(&mut buffer)?;
     let s = String::from("hello computer\n");
