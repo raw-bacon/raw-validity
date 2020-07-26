@@ -99,17 +99,28 @@ impl ToString for FreeGroupTerm {
 impl Reducable for FreeGroupTerm {
     fn reduced(self) -> FreeGroupTerm {
         let mut index: usize = 0;
-        let mut reduced_at_zero = false;
         let mut literals = self.literals.clone();
+        
+        enum ReducingState {
+            ReducedInBeginning,
+            ReducedElsewhere,
+            DidNotReduce
+        }
+
         while literals.len() > 0 && index < literals.len() - 1 {
+            let mut reducing_state = ReducingState::DidNotReduce;
             if literals[index] == literals[index + 1].inverse() {
                 literals.remove(index);
                 literals.remove(index);
-                reduced_at_zero = index <= 1;
+                match index {
+                    0 | 1 => reducing_state = ReducingState::ReducedInBeginning,
+                    _     => reducing_state = ReducingState::ReducedElsewhere
+                };
             }
-            index = match reduced_at_zero {
-                true => 0,
-                false => index + 1
+            index = match reducing_state {
+                ReducingState::ReducedInBeginning => 0,
+                ReducingState::ReducedElsewhere   => index - 1,
+                ReducingState::DidNotReduce       => index + 1
             };
         }
         return FreeGroupTerm { literals: (literals).to_vec() }
@@ -128,6 +139,12 @@ mod tests {
         
         let result = FreeGroupTerm { literals: vec![x, x_inv, y] };
         assert_eq!(FreeGroupTerm { literals: vec![y] }, result.reduced());
+
+        let x = lit('x');
+        let y = lit('y');
+        let z = lit('z');
+        let result = FreeGroupTerm { literals: vec![x, y, z, z.inverse(), y.inverse(), x.inverse()]};
+        assert_eq!(FreeGroupTerm::new(vec![]), result.reduced());
     }
 
     #[test]
