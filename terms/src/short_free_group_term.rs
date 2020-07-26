@@ -2,11 +2,11 @@ use super::literal::Literal;
 use super::free_group_term::FreeGroupTerm;
 
 /// Short means length at most three
-#[derive(Eq, PartialOrd, PartialEq, Ord)]
+#[derive(Eq, PartialOrd, PartialEq, Ord, Debug)]
 pub struct ShortFreeGroupTerm {
-    left:  Option<Literal>,
-    mid:   Option<Literal>,
-    right: Option<Literal>
+    pub left:  Option<Literal>,
+    pub mid:   Option<Literal>,
+    pub right: Option<Literal>
 }
 
 impl ShortFreeGroupTerm {
