@@ -21,7 +21,7 @@ use super::parse_literal;
 /// let y = Literal::new('y', 0, false);
 /// let z = Literal::new('z', 39, false);
 /// let term = FreeGroupTerm::new(vec![x, y, z]);
-/// assert_eq!(Ok(term), parse_free_group_term::parse(string));
+/// assert_eq!(Ok(term), parse_free_group_term::parse(&string));
 /// ```
 pub fn parse(s: &String) -> Result<FreeGroupTerm, String> {
     if *s == String::from("e") {
