@@ -4,7 +4,7 @@ use terms::Reducable;
 use std::collections::BTreeSet;
 
 pub struct CNF {
-    meetands: BTreeSet<BTreeSet<FreeGroupTerm>>
+    pub meetands: BTreeSet<BTreeSet<FreeGroupTerm>>
 }
 
 impl ToString for CNF {
