@@ -34,8 +34,19 @@ pub fn parse(s: &String) -> Result<LGroupTerm, String> {
     let mut s = s.clone();
     // remove whitespace and outer brackets
     s.retain(|c| !c.is_whitespace());
-    while s.len() >= 2 && only_has_outermost_brackets(&s) {
-        s = s[1..s.len() - 1].to_string();
+    loop {
+        let result = has_outermost_brackets(&s);
+        match result {
+            Err(e) => return Err(e),
+            Ok(can_be_stripped) => {
+                if s.len() >= 2 && can_be_stripped {
+                    s = s[1..s.len() - 1].to_string();
+                }
+                else {
+                    break;
+                }
+            }
+        }
     }
 
     if is_atom(&s) { 
@@ -56,27 +67,37 @@ pub fn parse(s: &String) -> Result<LGroupTerm, String> {
 
     if is_meet(&s) {
         let mut meetands = BTreeSet::new();
-
-        for term_string in s.split("^") {
-            let result = parse(&term_string.to_string());
-            match result {
-                Ok(term) => meetands.insert(term),
-                Err(e) => return Err(format!("Parsing this meet failed: {}, {}", &s, e))
-            };
-        }
+        let result = split_at_outermost_meet(&s);
+        match result {
+            Err(e) => return Err(e),
+            Ok(strings) => {
+                for term_string in strings {
+                    let result = parse(&term_string);
+                    match result {
+                        Ok(term) => meetands.insert(term),
+                        Err(e) => return Err(format!("Parsing this meet failed: {}, {}", s, e))
+                    };
+                }
+            }
+        };
         return Ok(LGroupTerm::Meet(meetands));
     }
 
     if is_join(&s) {
         let mut joinands = BTreeSet::new();
-
-        for term_string in s.split("v") {
-            let result = parse(&term_string.to_string());
-            match result {
-                Ok(term) => joinands.insert(term),
-                Err(e) => return Err(format!("Parsing this join failed: {}, {}", &s, e))
-            };
-        }
+        let result = split_at_outermost_join(&s);
+        match result {
+            Err(e) => return Err(e),
+            Ok(strings) => {
+                for term_string in strings {
+                    let result = parse(&term_string);
+                    match result {
+                        Ok(term) => joinands.insert(term),
+                        Err(e) => return Err(format!("Parsing this join failed: {}, {}", &s, e))
+                    };
+                }
+            }
+        };
         return Ok(LGroupTerm::Join(joinands));
     }
 
@@ -136,6 +157,68 @@ pub fn parse(s: &String) -> Result<LGroupTerm, String> {
     return Ok(LGroupTerm::Prod(factors));
 }
 
+fn split_at_outermost_join(s: &String) -> Result<Vec<String>, String> {
+    let mut depth = 0;
+    let mut strings = Vec::new();
+    let mut current_string = String::new();
+    for c in s.chars() {
+        match c {
+            '(' => {
+                depth += 1;
+                current_string.push(c);
+            },
+            ')' => {
+                match depth {
+                    0 => return Err(String::from(format!("Brackets don't match in {}", s))),
+                    _ => depth -= 1
+                };
+                current_string.push(c);
+            },
+            'v' => {
+                if depth == 0 {
+                    strings.push(current_string.clone());
+                    current_string = String::new();
+                }
+                else {
+                    current_string.push(c);
+                }
+            },
+            _ => current_string.push(c)
+        };
+    }
+    strings.push(current_string);
+    return Ok(strings);
+}
+
+fn split_at_outermost_meet(s: &String) -> Result<Vec<String>, String> {
+    let mut depth = 0;
+    let mut strings = Vec::new();
+    let mut current_string = String::new();
+    for c in s.chars() {
+        match c {
+            '(' => depth += 1,
+            ')' => {
+                match depth {
+                    0 => return Err(String::from(format!("Brackets don't match in {}", s))),
+                    _ => depth -= 1
+                };
+            },
+            '^' => {
+                if depth == 0 {
+                    strings.push(current_string.clone());
+                    current_string = String::new();
+                }
+                else {
+                    current_string.push(c);
+                }
+            },
+            _ => current_string.push(c)
+        };
+    }
+    strings.push(current_string);
+    return Ok(strings);
+}
+
 /// Returns whether the input contains `^`, `v`, or `-`
 fn is_atom(s: &String) -> bool {
     for c in s.chars() {
@@ -190,25 +273,33 @@ fn is_join(s: &String) -> bool {
 }
 
 
-/// returns true if it is of the form `(...(x)...)`, where
-/// `x` does not contain any brackets. 
-fn only_has_outermost_brackets(s: &String) -> bool {
-    #[derive(PartialEq, Eq)]
-    enum Position { Left, Middle, Right };
-    let mut pos = Position::Left;
+/// returns true if it its outermost brackets are totally left and right,
+/// and are redundant.
+fn has_outermost_brackets(s: &String) -> Result<bool, String> {
+    let mut depth = 0;
+    let s = s[0 .. s.len() - 1].to_string();
     for c in s.chars() {
-        match &pos {
-            Position::Left => {
-                if c != '(' { pos = Position::Middle; }
+        match c {
+            '(' => depth += 1,
+            ')' => { 
+                match depth {
+                    0 => return Err(format!("Brackets don't match in {}.", s)),
+                    _ => depth -= 1
+                }
             },
-            Position::Middle => {
-                if c == '(' { return false; }
-                else if c == ')' { pos = Position::Right; }
-            },
-            Position::Right => {
-                if c != ')' { return false; }
-            }
+            _ => {}
         };
+        if depth == 0 { return Ok(false); }
     }
-    return pos == Position::Right;
+    return Ok(true);
+}
+
+#[cfg(test)]
+mod tests {
+    
+    #[test]
+    fn test_does_not_crash() {
+        let string = String::from("(x v (z v (x ^ y)))");
+        assert_eq!(string, super::parse(&string).expect("crashed ...").to_string());
+    }
 }
