@@ -31,7 +31,6 @@ use std::collections::BTreeSet;
 /// assert_eq!(Ok(term), parse_l_group_term::parse(&String::from("x(y^z)")));
 /// ```
 pub fn parse(s: &String) -> Result<LGroupTerm, String> {
-    println!("{}", &s);
     let mut s = s.clone();
     // remove whitespace and outer brackets
     s.retain(|c| !c.is_whitespace());

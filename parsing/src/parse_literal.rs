@@ -52,8 +52,5 @@ fn without_first(string: String) -> String {
     iterator.next();
     for c in iterator { result.push(c); }
 
-    // remove this
-    println!("{}", result);
-    
     return result;
 }
