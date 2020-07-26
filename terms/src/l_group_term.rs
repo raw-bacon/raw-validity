@@ -75,7 +75,7 @@ impl Mul for LGroupTerm {
     }
 }
 
-
+/*
 impl Meet for LGroupTerm {
     type Output = LGroupTerm;
 
@@ -96,6 +96,7 @@ impl Join for LGroupTerm {
         LGroupTerm::Join(joinands).reduced()
     }
 }
+*/
 
 impl Term for LGroupTerm {
     fn inverse(&self) -> LGroupTerm {
