@@ -178,6 +178,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "exec"
 version = "0.1.0"
 dependencies = [
+ "cnf 0.1.0",
  "parsing 0.1.0",
 ]
 
