@@ -21,7 +21,7 @@ mod parse_l_group_term;
 /// # use terms::free_group_term::*;
 /// # use terms::literal::*;
 /// # use terms::l_group_term::*;
-/// let x = FreeGroupTerm::from(Literal::from('x'));
+/// let x = FreeGroupTerm::from('x');
 /// let lGroupTerm = LGroupTerm::Atom(x);
 /// ```
 /// a `Meet`, a `Join`, or a `Product`. `Meet`s and `Join`s take `BTreeSet`s as arguments:
@@ -31,8 +31,8 @@ mod parse_l_group_term;
 /// # use terms::l_group_term::*;
 /// use std::collections::BTreeSet;
 /// let mut meetands = BTreeSet::new();
-/// meetands.insert(LGroupTerm::from(Literal::from('x')));
-/// meetands.insert(LGroupTerm::from(Literal::from('y')));
+/// meetands.insert(LGroupTerm::from('x'));
+/// meetands.insert(LGroupTerm::from('y'));
 /// let meet = LGroupTerm::Meet(meetands);
 /// ```
 /// whereas `Product`s take `Vec<LGroupTerm>`s:
@@ -40,7 +40,7 @@ mod parse_l_group_term;
 /// # use terms::free_group_term::*;
 /// # use terms::l_group_term::*;
 /// # use terms::literal::*;
-/// let factors = vec![LGroupTerm::from(Literal::from('x')), LGroupTerm::from(Literal::from('y'))];
+/// let factors = vec![LGroupTerm::from('x'), LGroupTerm::from('y')];
 /// let product = LGroupTerm::Prod(factors);
 /// ```
 /// This models associativity of meets, joins, and products, and takes into
@@ -56,7 +56,7 @@ pub enum LGroupTerm {
 
 impl From<FreeGroupTerm> for LGroupTerm {
     fn from(x: FreeGroupTerm) -> LGroupTerm {
-        LGroupTerm::Atom(x)
+        LGroupTerm::Atom(x).reduced()
     }
 }
 
@@ -75,9 +75,8 @@ impl From<&str> for LGroupTerm {
     /// meets are denoted by `^`, joins by `v`, and inverses by prefix `-`. e.g.,
     /// ```
     /// use terms::l_group_term::LGroupTerm;
-    /// use terms::literal::Literal;
     /// use terms::Term;
-    /// let term = LGroupTerm::from(Literal::from('x').inverse());
+    /// let term = LGroupTerm::from('x').inverse();
     /// assert_eq!(term, LGroupTerm::from("-x"));
     /// ```
     /// Multiplication of terms bigger than literals is also by writing them next to
@@ -87,15 +86,15 @@ impl From<&str> for LGroupTerm {
     /// # use terms::literal::Literal;
     /// use std::collections::BTreeSet;
     /// let mut meetands = BTreeSet::new();
-    /// meetands.insert(LGroupTerm::from(Literal::from('y')));
-    /// meetands.insert(LGroupTerm::from(Literal::from('z')));
-    /// let term = LGroupTerm::from(Literal::from('x')) *  LGroupTerm::Meet(meetands);
+    /// meetands.insert(LGroupTerm::from('y'));
+    /// meetands.insert(LGroupTerm::from('z'));
+    /// let term = LGroupTerm::from('x') *  LGroupTerm::Meet(meetands);
     /// assert_eq!(term, LGroupTerm::from("x(y^z)"));
     /// ```
     fn from(s: &str) -> LGroupTerm {
         let result = parse_l_group_term::parse(s);
         match result {
-            Ok(term) => term,
+            Ok(term) => term.reduced(),
             Err(e) => panic!(e)
         }
     }
