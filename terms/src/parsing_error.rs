@@ -1,4 +1,5 @@
 
+/// An error that arises by parsing literals from strings.
 #[derive(Debug, PartialEq, Eq)]
 pub enum ParsingError {
     EmptyLiteralError,
