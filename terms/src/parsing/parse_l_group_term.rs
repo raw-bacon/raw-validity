@@ -1,6 +1,6 @@
 use super::parse_free_group_term;
-use terms::l_group_term::LGroupTerm;
-use terms::Term;
+use super::super::l_group_term::LGroupTerm;
+use super::super::Term;
 use std::collections::BTreeSet;
 
 /// Parses l-group terms. 

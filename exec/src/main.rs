@@ -1,5 +1,5 @@
 use std::io;
-use parsing::parse_l_group_term::parse;
+use terms::parsing::parse_l_group_term::parse;
 use cnf::normal_cnf;
 
 fn main() -> io::Result<()> {

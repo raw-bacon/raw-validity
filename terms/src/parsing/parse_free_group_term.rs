@@ -1,4 +1,4 @@
-use terms::free_group_term::*;
+use super::super::free_group_term::FreeGroupTerm;
 use super::parse_literal;
 
 
@@ -62,8 +62,8 @@ pub fn parse(s: &String) -> Result<FreeGroupTerm, String> {
 
 #[cfg(test)]
 mod tests {
-    use terms::literal::Literal;
-    use terms::free_group_term::FreeGroupTerm;
+    use super::super::super::literal::Literal;
+    use super::super::super::free_group_term::FreeGroupTerm;
 
     #[test]
     fn test_parse() {

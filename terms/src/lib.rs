@@ -37,3 +37,9 @@ mod l_group_term_reducing;
 /// The module containing everything about 'short' (shorter than three)
 /// free group terms, in particular the struct `ShortFreeGroupTerm`.
 pub mod short_free_group_term;
+
+mod parsing {
+    mod parse_free_group_term;
+    mod parse_l_group_term;
+    mod parse_literal;
+}

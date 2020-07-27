@@ -1,4 +1,4 @@
-use terms::literal::*;
+use super::super::literal::Literal;
 
 /// parses a literal from a string. 
 /// 

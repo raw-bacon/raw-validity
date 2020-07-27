@@ -2,7 +2,6 @@
 
 members = [
     "terms",
-    "parsing",
     "cnf",
     "exec",
 ]

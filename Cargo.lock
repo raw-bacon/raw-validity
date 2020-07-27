@@ -179,7 +179,7 @@ name = "exec"
 version = "0.1.0"
 dependencies = [
  "cnf 0.1.0",
- "parsing 0.1.0",
+ "terms 0.1.0",
 ]
 
 [[package]]
@@ -273,13 +273,6 @@ dependencies = [
 name = "oorandom"
 version = "11.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-
-[[package]]
-name = "parsing"
-version = "0.1.0"
-dependencies = [
- "terms 0.1.0",
-]
 
 [[package]]
 name = "plotters"
