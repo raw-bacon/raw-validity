@@ -40,3 +40,4 @@ pub mod short_free_group_term;
 
 
 pub mod parsing_error;
+pub mod equations;

@@ -24,7 +24,11 @@ pub (super) fn parse(s: &str) -> Result<FreeGroupTerm, ParsingError> {
         } else if c.is_alphabetic() {
             let parsed_literal = std::panic::catch_unwind(|| Literal::from(current_literal_string.as_str()));
             match parsed_literal {
-                Ok(literal) => literals.push(literal),
+                Ok(literal) => {
+                    if literal != Literal::new('e', 0, false) {
+                        literals.push(literal);
+                    }
+                },
                 Err(_) => return Err(ParsingError::InvalidLiteralError(current_literal_string))
             }
             current_literal_string = String::new();
@@ -34,7 +38,11 @@ pub (super) fn parse(s: &str) -> Result<FreeGroupTerm, ParsingError> {
     if current_literal_string != String::new() {
         let parsed_literal = std::panic::catch_unwind(|| Literal::from(current_literal_string.as_str()));
         match parsed_literal {
-            Ok(literal) => literals.push(literal),
+            Ok(literal) => {
+                if literal != Literal::new('e', 0, false) {
+                    literals.push(literal);
+                }
+            },
             Err(_) => return Err(ParsingError::InvalidLiteralError(current_literal_string))
         }
     }
