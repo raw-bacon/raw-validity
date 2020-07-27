@@ -37,6 +37,12 @@ impl From<FreeGroupTerm> for ShortFreeGroupTerm {
     }
 }
 
+impl From<&str> for ShortFreeGroupTerm {
+    fn from(s: &str) -> ShortFreeGroupTerm {
+        ShortFreeGroupTerm::from(FreeGroupTerm::from(s))
+    }
+}
+
 impl ToString for ShortFreeGroupTerm {
     fn to_string(&self) -> String {
         let mut string = String::new();

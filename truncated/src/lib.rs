@@ -1,2 +1,2 @@
-mod truncated_group;
-mod truncated_subgroup;
+pub mod truncated_group;
+pub mod truncated_subgroup;

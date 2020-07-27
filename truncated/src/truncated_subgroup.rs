@@ -5,20 +5,44 @@ use terms::Term;
 
 /// Represents the closed ball of radius 3 around e in the Cayley
 /// graph of a free group with respect to the standard free generating set.
+/// 
+/// # Examples
+/// Basic usage:
+/// ```
+/// use truncated::truncated_subgroup::TruncatedSubgroup;
+/// use terms::short_free_group_term::ShortFreeGroupTerm;
+/// use terms::literal::Literal;
+/// use std::collections::BTreeSet;
+/// let s = ShortFreeGroupTerm::from("xY");
+/// let t = ShortFreeGroupTerm::from("yz");
+/// let mut set = BTreeSet::new();
+/// set.insert(s);
+/// set.insert(t);
+/// let mut gens = BTreeSet::new();
+/// gens.insert(Literal::from('x'));
+/// gens.insert(Literal::from('y'));
+/// gens.insert(Literal::from('z'));
+/// let truncated = TruncatedSubgroup::new(set, gens);
+/// let mut expected = BTreeSet::new();
+/// expected.insert(s);
+/// expected.insert(t);
+/// expected.insert(ShortFreeGroupTerm::from("xz"));
+/// assert_eq!(expected, truncated.elements.clone());
+/// ```
 pub struct TruncatedSubgroup {
-    elements:                BTreeSet<ShortFreeGroupTerm>,
-    // gens_of_ambient_group:   BTreeSet<Literal>,
-    starts_with_single:      BTreeMap<Literal, BTreeSet<ShortFreeGroupTerm>>,
-    ends_with_single:        BTreeMap<Literal, BTreeSet<ShortFreeGroupTerm>>,
-    starts_with_pair:        BTreeMap<(Literal, Literal), BTreeSet<ShortFreeGroupTerm>>,
-    ends_with_pair:          BTreeMap<(Literal, Literal), BTreeSet<ShortFreeGroupTerm>>,
-    length_one:              BTreeSet<ShortFreeGroupTerm>,
-    length_two:              BTreeSet<ShortFreeGroupTerm>,
-    length_three:            BTreeSet<ShortFreeGroupTerm>
+    pub elements:                BTreeSet<ShortFreeGroupTerm>,
+    // pub gens_of_ambient_group:   BTreeSet<Literal>,
+    pub starts_with_single:      BTreeMap<Literal, BTreeSet<ShortFreeGroupTerm>>,
+    pub ends_with_single:        BTreeMap<Literal, BTreeSet<ShortFreeGroupTerm>>,
+    pub starts_with_pair:        BTreeMap<(Literal, Literal), BTreeSet<ShortFreeGroupTerm>>,
+    pub ends_with_pair:          BTreeMap<(Literal, Literal), BTreeSet<ShortFreeGroupTerm>>,
+    pub length_one:              BTreeSet<ShortFreeGroupTerm>,
+    pub length_two:              BTreeSet<ShortFreeGroupTerm>,
+    pub length_three:            BTreeSet<ShortFreeGroupTerm>
 }
 
 impl TruncatedSubgroup {
-    fn new(
+    pub fn new(
         elements: BTreeSet<ShortFreeGroupTerm>, 
         gens:     BTreeSet<Literal>
     ) -> TruncatedSubgroup {
@@ -100,6 +124,7 @@ impl Closable for TruncatedSubgroup {
         while found_new_element {
             found_new_element = false;
             for y in new_elements_buffer {
+                self.elements.insert(y.clone());
                 match (y.left, y.mid, y.right) {
                     (Some(a), None, None) => {
                         self.length_one.insert(y);
