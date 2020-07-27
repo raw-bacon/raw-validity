@@ -37,7 +37,11 @@ use super::normal_cnf::CNF;
 /// # use terms::free_group_term::FreeGroupTerm;
 /// # use cnf::three_cnf::ThreeCNF;
 /// # use std::collections::BTreeSet;
-/// let joinand1 = LGroupTerm::from(FreeGroupTerm::new(vec![Literal::from('x'), Literal::from('y'), Literal::from('z'), Literal::from('w')]));
+/// let joinand1 = LGroupTerm::from(
+///     Literal::from('x') * Literal::from('y')
+///                        * Literal::from('z')
+///                        * Literal::from('w')
+/// );
 /// let joinand2 = LGroupTerm::from(Literal::from('u'));
 /// let mut joinands = BTreeSet::new();
 /// joinands.insert(joinand1);
