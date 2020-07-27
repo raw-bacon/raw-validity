@@ -101,6 +101,12 @@ impl From<&str> for LGroupTerm {
     }
 }
 
+impl From<char> for LGroupTerm {
+    fn from(c: char) -> LGroupTerm {
+        LGroupTerm::Atom(FreeGroupTerm::from(c))
+    }
+}
+
 impl Mul for LGroupTerm {
     type Output = LGroupTerm;
 

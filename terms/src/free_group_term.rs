@@ -48,6 +48,12 @@ impl From<Literal> for FreeGroupTerm {
     }
 }
 
+impl From<char> for FreeGroupTerm {
+    fn from(c: char) -> FreeGroupTerm {
+        FreeGroupTerm::from(Literal::from(c))
+    }
+}
+
 impl From<&str> for FreeGroupTerm {
     /// parses a free group term from a string.
     /// 
