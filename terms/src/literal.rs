@@ -1,5 +1,7 @@
 use super::Term;
 use super::parsing_error::ParsingError;
+use super::free_group_term::FreeGroupTerm;
+use std::ops::Mul;
 
 /// The smallest term (apart from the identity).
 /// 
@@ -78,6 +80,13 @@ impl ToString for Literal {
             result.push_str(&self.id.to_string());
         }
         return result;
+    }
+}
+
+impl Mul for Literal {
+    type Output = FreeGroupTerm;
+    fn mul(self, other: Literal) -> FreeGroupTerm {
+        FreeGroupTerm::new(vec![self, other])
     }
 }
 

@@ -17,7 +17,7 @@ mod parse_free_group_term;
 /// ```
 /// # use terms::free_group_term::*;
 /// # use terms::literal::*;
-/// let term = FreeGroupTerm::new(vec![Literal::from('x'), Literal::from('y')]);
+/// let term = Literal::from('x') * Literal::from('y');
 /// ```
 /// In this case, `term` encodes the element xy of a free group.
 /// 
@@ -26,7 +26,7 @@ mod parse_free_group_term;
 /// # use terms::free_group_term::*;
 /// # use terms::literal::*;
 /// # use terms::*;
-/// let term = FreeGroupTerm::new(vec![Literal::from('x'), Literal::from('x').inverse()]);
+/// let term = Literal::from('x') * Literal::from('x').inverse();
 /// assert_eq!(String::from("e"), term.to_string());
 /// ```
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
