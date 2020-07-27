@@ -68,6 +68,22 @@ impl ToString for Literal {
 }
 
 impl From<&str> for Literal {
+    /// parses a literal from a string. 
+    /// 
+    /// # Examples
+    /// Basic usage:
+    /// Symbols with ids are okay.
+    /// ```
+    /// use terms::literal::Literal;
+    /// let literal = Literal::new('x', 31, true);
+    /// assert_eq!(literal, Literal::from("X31"));
+    /// ```
+    /// So are symbols without.
+    /// ```
+    /// # use terms::literal::Literal;
+    /// let literal = Literal::new('y', 0, false);
+    /// assert_eq!(literal, Literal::from("y"));
+    /// ```
     fn from(s: &str) -> Literal {
         let result = parse(s);
         match result {
@@ -90,27 +106,6 @@ mod tests {
     }
 }
 
-
-/// parses a literal from a string. 
-/// 
-/// # Examples
-/// Basic usage:
-/// Symbols with ids are okay.
-/// ```
-/// use parsing::parse_literal;
-/// use terms::literal::Literal;
-/// let string = String::from("X31");
-/// let literal = Literal::new('x', 31, true);
-/// assert_eq!(Ok(literal), parse_literal::parse(string));
-/// ```
-/// So are symbols without.
-/// ```
-/// # use parsing::parse_literal;
-/// # use terms::literal::Literal;
-/// let string = String::from("y");
-/// let literal = Literal::new('y', 0, false);
-/// assert_eq!(Ok(literal), parse_literal::parse(string));
-/// ```
 fn parse(s: &str) -> Result<Literal, ParsingError> {
     let l = s.len();
     if l == 0 {

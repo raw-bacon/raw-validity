@@ -5,34 +5,7 @@ use std::collections::BTreeSet;
 use super::super::parsing_error::ParsingError;
 
 
-/// Parses l-group terms. 
-/// 
-/// l-Group terms are represented in the input as strings,
-/// where literals are of the form `[character][usize]` (without the brackets),
-/// literals are multiplied by writing them next to each other (spaces are ignored),
-/// meets are denoted by `^`, joins by `v`, and inverses by prefix `-`. e.g.,
-/// ```
-/// use parsing::parse_l_group_term;
-/// use terms::l_group_term::LGroupTerm;
-/// use terms::literal::lit;
-/// use terms::Term;
-/// let term = LGroupTerm::from(lit('x').inverse());
-/// assert_eq!(Ok(term), parse_l_group_term::parse(&String::from("-x")))
-/// ```
-/// Multiplication of terms bigger than literals is also by writing them next to
-/// each other:
-/// ```
-/// # use parsing::parse_l_group_term;
-/// # use terms::l_group_term::LGroupTerm;
-/// # use terms::literal::lit;
-/// use std::collections::BTreeSet;
-/// let mut meetands = BTreeSet::new();
-/// meetands.insert(LGroupTerm::from(lit('y')));
-/// meetands.insert(LGroupTerm::from(lit('z')));
-/// let term = LGroupTerm::from(lit('x')) *  LGroupTerm::Meet(meetands);
-/// assert_eq!(Ok(term), parse_l_group_term::parse(&String::from("x(y^z)")));
-/// ```
-pub fn parse(s: &str) -> Result<LGroupTerm, ParsingError> {
+pub (super) fn parse(s: &str) -> Result<LGroupTerm, ParsingError> {
     let mut string = s.to_string();
     // remove whitespace and outer brackets
     string.retain(|c| !c.is_whitespace());

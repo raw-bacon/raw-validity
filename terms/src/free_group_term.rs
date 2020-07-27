@@ -49,6 +49,26 @@ impl From<Literal> for FreeGroupTerm {
 }
 
 impl From<&str> for FreeGroupTerm {
+    /// parses a free group term from a string.
+    /// 
+    /// This ignores all non-alphanumeric characters, such as `*`. Perhaps dangerously,
+    /// this also ignores symbols like `^`, and treats `v` as the name of a symbol.
+    /// The input is parsed by 
+    /// 
+    /// # Examples
+    /// Basic usage:
+    /// ```
+    /// use terms::literal::Literal;
+    /// use terms::free_group_term::FreeGroupTerm;
+    /// // this is equivalent to: 
+    /// // let string = "X31yz39";
+    /// let string = "X3 1*yz39 ";
+    /// let x = Literal::new('x', 31, true);
+    /// let y = Literal::new('y', 0, false);
+    /// let z = Literal::new('z', 39, false);
+    /// let term = FreeGroupTerm::new(vec![x, y, z]);
+    /// assert_eq!(term, FreeGroupTerm::from(string));
+    /// ```
     fn from(s: &str) -> FreeGroupTerm {
         let result = parse_free_group_term::parse(s);
         match result {
