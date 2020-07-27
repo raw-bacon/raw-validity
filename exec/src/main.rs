@@ -1,5 +1,5 @@
 use std::io;
-use terms::parsing::parse_l_group_term::parse;
+use terms::l_group_term::LGroupTerm;
 use cnf::normal_cnf;
 
 fn main() -> io::Result<()> {
@@ -7,7 +7,7 @@ fn main() -> io::Result<()> {
     let mut buffer = String::new();    
     io::stdin().read_line(&mut buffer)?;
     
-    let term = parse(&buffer).expect("Something went wrong ...");
+    let term = LGroupTerm::from(buffer.as_str());
     println!("You entered: {}", term.to_string());
     println!("The cnf is: {}", normal_cnf::CNF::from(term).to_string());
     return Ok(());

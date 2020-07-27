@@ -54,7 +54,7 @@ pub fn parse(s: &str) -> Result<LGroupTerm, ParsingError> {
     if is_atom(&string) { 
         let parsed_free_group_term = std::panic::catch_unwind(|| FreeGroupTerm::from(string.as_str()));
         match parsed_free_group_term {
-            Err(e) => return Err(ParsingError::ParsingAtomError(string)),
+            Err(_) => return Err(ParsingError::ParsingAtomError(string)),
             Ok(term) => return Ok(LGroupTerm::Atom(term))
         };
     }
@@ -171,7 +171,7 @@ fn split_at_outermost_join(s: &String) -> Result<Vec<String>, ParsingError> {
             },
             ')' => {
                 match depth {
-                    0 => return Err(ParsingError::NonMatchingBracketsError(*s)),
+                    0 => return Err(ParsingError::NonMatchingBracketsError(s.clone())),
                     _ => depth -= 1
                 };
                 current_string.push(c);
@@ -201,7 +201,7 @@ fn split_at_outermost_meet(s: &String) -> Result<Vec<String>, ParsingError> {
             '(' => depth += 1,
             ')' => {
                 match depth {
-                    0 => return Err(ParsingError::NonMatchingBracketsError(*s)),
+                    0 => return Err(ParsingError::NonMatchingBracketsError(s.clone())),
                     _ => depth -= 1
                 };
             },

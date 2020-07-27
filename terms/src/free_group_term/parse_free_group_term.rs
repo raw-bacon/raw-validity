@@ -45,7 +45,7 @@ pub fn parse(s: &str) -> Result<FreeGroupTerm, ParsingError> {
             let parsed_literal = std::panic::catch_unwind(|| Literal::from(current_literal_string.as_str()));
             match parsed_literal {
                 Ok(literal) => literals.push(literal),
-                Err(e) => return Err(ParsingError::InvalidLiteralError(current_literal_string))
+                Err(_) => return Err(ParsingError::InvalidLiteralError(current_literal_string))
             }
             current_literal_string = String::new();
             current_literal_string.push(c);
@@ -55,7 +55,7 @@ pub fn parse(s: &str) -> Result<FreeGroupTerm, ParsingError> {
         let parsed_literal = std::panic::catch_unwind(|| Literal::from(current_literal_string.as_str()));
         match parsed_literal {
             Ok(literal) => literals.push(literal),
-            Err(e) => return Err(ParsingError::InvalidLiteralError(current_literal_string))
+            Err(_) => return Err(ParsingError::InvalidLiteralError(current_literal_string))
         }
     }
     return Ok(FreeGroupTerm::new(literals));
