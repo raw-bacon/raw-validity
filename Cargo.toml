@@ -4,6 +4,7 @@ members = [
     "terms",
     "cnf",
     "exec",
+    "truncated",
 ]
 
 [profile.release]
