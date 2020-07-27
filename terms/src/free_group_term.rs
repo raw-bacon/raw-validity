@@ -2,6 +2,8 @@ use super::*;
 use super::literal::*;
 use std::ops::{Mul, MulAssign};
 
+mod parse_free_group_term;
+
 /// An element of the group algebra.
 /// 
 /// # Examples
@@ -43,6 +45,16 @@ pub static IDENTITY: FreeGroupTerm = FreeGroupTerm { literals: Vec::new() };
 impl From<Literal> for FreeGroupTerm {
     fn from(x: Literal) -> FreeGroupTerm {
         FreeGroupTerm::new(vec![x])
+    }
+}
+
+impl From<&str> for FreeGroupTerm {
+    fn from(s: &str) -> FreeGroupTerm {
+        let result = parse_free_group_term::parse(s);
+        match result {
+            Ok(t) => t,
+            Err(e) => panic!(e)
+        }
     }
 }
 

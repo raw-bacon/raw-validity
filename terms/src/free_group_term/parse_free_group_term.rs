@@ -1,5 +1,6 @@
 use super::super::free_group_term::FreeGroupTerm;
-use super::parse_literal;
+use super::super::literal::Literal;
+use super::parsing_error::ParsingError;
 
 
 /// parses a free group term from a string.
@@ -23,8 +24,8 @@ use super::parse_literal;
 /// let term = FreeGroupTerm::new(vec![x, y, z]);
 /// assert_eq!(Ok(term), parse_free_group_term::parse(&string));
 /// ```
-pub fn parse(s: &String) -> Result<FreeGroupTerm, String> {
-    if *s == String::from("e") {
+pub fn parse(s: &str) -> Result<FreeGroupTerm, ParsingError> {
+    if s == "e" {
         return Ok(FreeGroupTerm::new(Vec::new()));
     }
     let mut literals = Vec::new();
@@ -33,7 +34,7 @@ pub fn parse(s: &String) -> Result<FreeGroupTerm, String> {
     let mut current_literal_string = String::new();
     let first_char: char;
     match first {
-        None => return Err(String::from("Empty free group term does not exist")),
+        None => return Err(ParsingError::EmptyFreeGroupTermError),
         Some(c) => first_char = c
     };
     current_literal_string.push(first_char);
@@ -41,20 +42,20 @@ pub fn parse(s: &String) -> Result<FreeGroupTerm, String> {
         if c.is_numeric() {
             current_literal_string.push(c);
         } else if c.is_alphabetic() {
-            let parsed_literal = parse_literal::parse(current_literal_string);
+            let parsed_literal = std::panic::catch_unwind(|| Literal::from(current_literal_string.as_str()));
             match parsed_literal {
                 Ok(literal) => literals.push(literal),
-                Err(e) => return Err(e)
+                Err(e) => return Err(ParsingError::InvalidLiteralError(current_literal_string))
             }
             current_literal_string = String::new();
             current_literal_string.push(c);
         } 
     }
     if current_literal_string != String::new() {
-        let parsed_literal = parse_literal::parse(current_literal_string);
+        let parsed_literal = std::panic::catch_unwind(|| Literal::from(current_literal_string.as_str()));
         match parsed_literal {
             Ok(literal) => literals.push(literal),
-            Err(e) => return Err(e)
+            Err(e) => return Err(ParsingError::InvalidLiteralError(current_literal_string))
         }
     }
     return Ok(FreeGroupTerm::new(literals));

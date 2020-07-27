@@ -38,8 +38,5 @@ mod l_group_term_reducing;
 /// free group terms, in particular the struct `ShortFreeGroupTerm`.
 pub mod short_free_group_term;
 
-mod parsing {
-    mod parse_free_group_term;
-    mod parse_l_group_term;
-    mod parse_literal;
-}
+
+pub mod parsing_error;

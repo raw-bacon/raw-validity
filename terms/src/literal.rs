@@ -1,4 +1,5 @@
 use super::Term;
+use super::parsing_error::ParsingError;
 
 /// The smallest term (apart from the identity).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -143,20 +144,4 @@ fn without_first(string: &str) -> String {
     for c in iterator { result.push(c); }
 
     return result;
-}
-
-pub enum ParsingError {
-    EmptyLiteralError,
-    NoLowerCaseError(char)
-}
-
-impl std::fmt::Display for ParsingError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            ParsingError::EmptyLiteralError => 
-                write!(f, "Empty literal could not be parsed."),
-            ParsingError::NoLowerCaseError(c) => 
-                write!(f, format!("The character {} does not have a lower case.", c))
-        }
-    }
 }

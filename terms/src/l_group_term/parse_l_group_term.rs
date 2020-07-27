@@ -1,7 +1,9 @@
-use super::parse_free_group_term;
+use super::super::free_group_term::FreeGroupTerm;
 use super::super::l_group_term::LGroupTerm;
 use super::super::Term;
 use std::collections::BTreeSet;
+use super::super::parsing_error::ParsingError;
+
 
 /// Parses l-group terms. 
 /// 
@@ -30,17 +32,17 @@ use std::collections::BTreeSet;
 /// let term = LGroupTerm::from(lit('x')) *  LGroupTerm::Meet(meetands);
 /// assert_eq!(Ok(term), parse_l_group_term::parse(&String::from("x(y^z)")));
 /// ```
-pub fn parse(s: &String) -> Result<LGroupTerm, String> {
-    let mut s = s.clone();
+pub fn parse(s: &str) -> Result<LGroupTerm, ParsingError> {
+    let mut string = s.to_string();
     // remove whitespace and outer brackets
-    s.retain(|c| !c.is_whitespace());
+    string.retain(|c| !c.is_whitespace());
     loop {
-        let result = has_outermost_brackets(&s);
+        let result = has_outermost_brackets(&string);
         match result {
             Err(e) => return Err(e),
             Ok(can_be_stripped) => {
-                if s.len() >= 2 && can_be_stripped {
-                    s = s[1..s.len() - 1].to_string();
+                if string.len() >= 2 && can_be_stripped {
+                    string = string[1..string.len() - 1].to_string();
                 }
                 else {
                     break;
@@ -49,25 +51,25 @@ pub fn parse(s: &String) -> Result<LGroupTerm, String> {
         }
     }
 
-    if is_atom(&s) { 
-        let parsed_free_group_term = parse_free_group_term::parse(&s);
+    if is_atom(&string) { 
+        let parsed_free_group_term = std::panic::catch_unwind(|| FreeGroupTerm::from(string.as_str()));
         match parsed_free_group_term {
-            Err(e) => return Err(format!("parsing this atom failed: {}. {}", &s, e)),
+            Err(e) => return Err(ParsingError::ParsingAtomError(string)),
             Ok(term) => return Ok(LGroupTerm::Atom(term))
         };
     }
     
-    if is_inverse(&s) {
-        let result = parse(&s[1..s.len()].to_string());
+    if is_inverse(&string) {
+        let result = parse(&string[1..string.len()].to_string());
         match result {
             Ok(term) => return Ok(term.inverse()),
-            Err(e) => return Err(format!("Parsing this inverse failed: {}, {}", &s, e))
+            Err(e) => return Err(ParsingError::ParsingInverseError(string, e.to_string()))
         };
     }
 
-    if is_meet(&s) {
+    if is_meet(&string) {
         let mut meetands = BTreeSet::new();
-        let result = split_at_outermost_meet(&s);
+        let result = split_at_outermost_meet(&string);
         match result {
             Err(e) => return Err(e),
             Ok(strings) => {
@@ -75,7 +77,7 @@ pub fn parse(s: &String) -> Result<LGroupTerm, String> {
                     let result = parse(&term_string);
                     match result {
                         Ok(term) => meetands.insert(term),
-                        Err(e) => return Err(format!("Parsing this meet failed: {}, {}", s, e))
+                        Err(e) => return Err(ParsingError::ParsingMeetError(string, e.to_string()))
                     };
                 }
             }
@@ -83,9 +85,9 @@ pub fn parse(s: &String) -> Result<LGroupTerm, String> {
         return Ok(LGroupTerm::Meet(meetands));
     }
 
-    if is_join(&s) {
+    if is_join(&string) {
         let mut joinands = BTreeSet::new();
-        let result = split_at_outermost_join(&s);
+        let result = split_at_outermost_join(&string);
         match result {
             Err(e) => return Err(e),
             Ok(strings) => {
@@ -93,7 +95,7 @@ pub fn parse(s: &String) -> Result<LGroupTerm, String> {
                     let result = parse(&term_string);
                     match result {
                         Ok(term) => joinands.insert(term),
-                        Err(e) => return Err(format!("Parsing this join failed: {}, {}", &s, e))
+                        Err(e) => return Err(ParsingError::ParsingJoinError(string, e.to_string()))
                     };
                 }
             }
@@ -104,14 +106,14 @@ pub fn parse(s: &String) -> Result<LGroupTerm, String> {
     let mut factors = Vec::new();
     let mut current_factor = String::new();
     let mut depth = 0;
-    for c in s.chars() {
+    for c in string.chars() {
         match &c {
             '(' => {
                 if depth == 0 && current_factor.len() > 0 {
                     let result = parse(&current_factor);
                     match result {
                         Ok(term) => factors.push(term),
-                        Err(e) => return Err(format!("Parsing the product {} at {} failed. {}", &s, &current_factor, e))
+                        Err(e) => return Err(ParsingError::ParsingProductError(string, current_factor, e.to_string()))
                     };
                     current_factor = String::new();
                 }
@@ -120,7 +122,7 @@ pub fn parse(s: &String) -> Result<LGroupTerm, String> {
             },
             ')' => {
                 match depth {
-                    0 => return Err(String::from("Brackets do not match!")),
+                    0 => return Err(ParsingError::NonMatchingBracketsError(string.to_string())),
                     _ => depth -= 1
                 };
                 current_factor.push(c);
@@ -128,7 +130,7 @@ pub fn parse(s: &String) -> Result<LGroupTerm, String> {
                     let result = parse(&current_factor);
                     match result {
                         Ok(term) => factors.push(term),
-                        Err(e) => return Err(format!("Parsing the product {} at {} failed. {}", &s, &current_factor, e))
+                        Err(e) => return Err(ParsingError::ParsingProductError(string, current_factor, e.to_string()))
                     };
                     current_factor = String::new();
                 }
@@ -138,7 +140,7 @@ pub fn parse(s: &String) -> Result<LGroupTerm, String> {
                     let result = parse(&current_factor);
                     match result {
                         Ok(term) => factors.push(term),
-                        Err(e) => return Err(format!("Parsing the product {} at {} failed. {}", &s, &current_factor, e))
+                        Err(e) => return Err(ParsingError::ParsingProductError(string, current_factor, e.to_string()))
                     };
                     current_factor = String::new();
                 }
@@ -151,13 +153,13 @@ pub fn parse(s: &String) -> Result<LGroupTerm, String> {
         let result = parse(&current_factor);
             match result {
                 Ok(term) => factors.push(term),
-                Err(e) => return Err(format!("Parsing the product {} at {} failed. {}", &s, &current_factor, e))
+                Err(e) => return Err(ParsingError::ParsingProductError(string, current_factor, e.to_string()))
             };
     }
     return Ok(LGroupTerm::Prod(factors));
 }
 
-fn split_at_outermost_join(s: &String) -> Result<Vec<String>, String> {
+fn split_at_outermost_join(s: &String) -> Result<Vec<String>, ParsingError> {
     let mut depth = 0;
     let mut strings = Vec::new();
     let mut current_string = String::new();
@@ -169,7 +171,7 @@ fn split_at_outermost_join(s: &String) -> Result<Vec<String>, String> {
             },
             ')' => {
                 match depth {
-                    0 => return Err(String::from(format!("Brackets don't match in {}", s))),
+                    0 => return Err(ParsingError::NonMatchingBracketsError(*s)),
                     _ => depth -= 1
                 };
                 current_string.push(c);
@@ -190,7 +192,7 @@ fn split_at_outermost_join(s: &String) -> Result<Vec<String>, String> {
     return Ok(strings);
 }
 
-fn split_at_outermost_meet(s: &String) -> Result<Vec<String>, String> {
+fn split_at_outermost_meet(s: &String) -> Result<Vec<String>, ParsingError> {
     let mut depth = 0;
     let mut strings = Vec::new();
     let mut current_string = String::new();
@@ -199,7 +201,7 @@ fn split_at_outermost_meet(s: &String) -> Result<Vec<String>, String> {
             '(' => depth += 1,
             ')' => {
                 match depth {
-                    0 => return Err(String::from(format!("Brackets don't match in {}", s))),
+                    0 => return Err(ParsingError::NonMatchingBracketsError(*s)),
                     _ => depth -= 1
                 };
             },
@@ -275,7 +277,7 @@ fn is_join(s: &String) -> bool {
 
 /// returns true if it its outermost brackets are totally left and right,
 /// and are redundant.
-fn has_outermost_brackets(s: &String) -> Result<bool, String> {
+fn has_outermost_brackets(s: &String) -> Result<bool, ParsingError> {
     let mut depth = 0;
     let s = s[0 .. s.len() - 1].to_string();
     for c in s.chars() {
@@ -283,7 +285,7 @@ fn has_outermost_brackets(s: &String) -> Result<bool, String> {
             '(' => depth += 1,
             ')' => { 
                 match depth {
-                    0 => return Err(format!("Brackets don't match in {}.", s)),
+                    0 => return Err(ParsingError::NonMatchingBracketsError(s)),
                     _ => depth -= 1
                 }
             },

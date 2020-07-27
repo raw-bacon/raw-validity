@@ -5,6 +5,8 @@ use std::collections::BTreeSet;
 use std::ops::Mul;
 use super::l_group_term_reducing::*;
 
+mod parse_l_group_term;
+
 /// An element the term algebra of l-groups.
 /// 
 /// # Examples
@@ -61,6 +63,16 @@ impl From<FreeGroupTerm> for LGroupTerm {
 impl From<Literal> for LGroupTerm {
     fn from(x: Literal) -> LGroupTerm {
         LGroupTerm::Atom(FreeGroupTerm::from(x))
+    }
+}
+
+impl From<&str> for LGroupTerm {
+    fn from(s: &str) -> LGroupTerm {
+        let result = parse_l_group_term::parse(s);
+        match result {
+            Ok(term) => term,
+            Err(e) => panic!(e)
+        }
     }
 }
 
