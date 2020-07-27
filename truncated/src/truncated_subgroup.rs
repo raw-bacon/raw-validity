@@ -2,6 +2,7 @@ use std::collections::{BTreeSet, BTreeMap};
 use terms::short_free_group_term::*;
 use terms::literal::Literal;
 use terms::Term;
+use super::Closable;
 
 /// Represents the closed ball of radius 3 around e in the Cayley
 /// graph of a free group with respect to the standard free generating set.
@@ -113,10 +114,6 @@ impl TruncatedSubgroup {
     }
 }
 
-pub trait Closable {
-    fn close(&mut self);
-}
-
 impl Closable for TruncatedSubgroup {
     fn close(&mut self) {
         let mut found_new_element = true;
@@ -145,7 +142,7 @@ impl Closable for TruncatedSubgroup {
                         self.starts_with_pair.get_mut(&(a, b)).unwrap().insert(y);
                         self.ends_with_pair.get_mut(&(b, c)).unwrap().insert(y);
                     }
-                    _ => panic!("Invalid ShortFreeGroupTerm")
+                    _ => {} // is identity
                 };
             }
             new_elements_buffer = BTreeSet::new();
