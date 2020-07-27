@@ -154,16 +154,19 @@ fn contains_prods(xs: &Vec<LGroupTerm>) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::literal::*;
-    use super::*;
+    use super::literal::Literal;
+    use super::l_group_term::LGroupTerm;
+    use std::collections::BTreeSet;
+    use crate::Reducable;
+    use crate::free_group_term::FreeGroupTerm;
 
     #[test]
     fn test_meet_reduced() {
         // term = x ^ (y ^ (z ^ w))
-        let x = LGroupTerm::from(lit('x'));
-        let y = LGroupTerm::from(lit('y'));
-        let z = LGroupTerm::from(lit('z'));
-        let w = LGroupTerm::from(lit('w'));
+        let x = LGroupTerm::from(Literal::from('x'));
+        let y = LGroupTerm::from(Literal::from('y'));
+        let z = LGroupTerm::from(Literal::from('z'));
+        let w = LGroupTerm::from(Literal::from('w'));
         let mut zw_meetands = BTreeSet::new();
         zw_meetands.insert(z.clone());
         zw_meetands.insert(w.clone());
@@ -188,7 +191,7 @@ mod tests {
 
     #[test]
     fn test_prod_reduced() {
-        let result = LGroupTerm::Prod(vec![LGroupTerm::from(lit('x')), LGroupTerm::from(lit('y'))]);
-        assert_eq!(LGroupTerm::Atom(FreeGroupTerm::new(vec![lit('x'), lit('y')])), result.reduced());
+        let result = LGroupTerm::Prod(vec![LGroupTerm::from(Literal::from('x')), LGroupTerm::from(Literal::from('y'))]);
+        assert_eq!(LGroupTerm::Atom(FreeGroupTerm::new(vec![Literal::from('x'), Literal::from('y')])), result.reduced());
     }
 }

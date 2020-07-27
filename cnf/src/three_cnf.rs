@@ -14,12 +14,12 @@ use super::normal_cnf::CNF;
 /// # Examples
 /// Sometimes, you get empty `ThreeCNF`s from non-empty terms:
 /// ```
+/// use terms::literal::Literal;
 /// use terms::l_group_term::LGroupTerm;
 /// use terms::free_group_term::FreeGroupTerm;
-/// use terms::literal::lit;
 /// use cnf::three_cnf::ThreeCNF;
 /// use std::collections::BTreeSet;
-/// let term = LGroupTerm::from(FreeGroupTerm::new(vec![lit('x'), lit('y'), lit('z'), lit('w')]));
+/// let term = LGroupTerm::from(FreeGroupTerm::new(vec![Literal::from('x'), Literal::from('y'), Literal::from('z'), Literal::from('w')]));
 /// let three_cnf = ThreeCNF::from(term);
 /// let empty_three_cnf = ThreeCNF { meetands: BTreeSet::new() };
 /// assert_eq!(empty_three_cnf, three_cnf);
@@ -28,13 +28,13 @@ use super::normal_cnf::CNF;
 /// using the trick `e <= r v st` iff `e <= r v sX v xt`, where `x` is a variable that
 /// does not appear in the formula.
 /// ```
+/// # use terms::literal::Literal;
 /// # use terms::l_group_term::LGroupTerm;
 /// # use terms::free_group_term::FreeGroupTerm;
-/// # use terms::literal::lit;
 /// # use cnf::three_cnf::ThreeCNF;
 /// # use std::collections::BTreeSet;
-/// let joinand1 = LGroupTerm::from(FreeGroupTerm::new(vec![lit('x'), lit('y'), lit('z'), lit('w')]));
-/// let joinand2 = LGroupTerm::from(lit('u'));
+/// let joinand1 = LGroupTerm::from(FreeGroupTerm::new(vec![Literal::from('x'), Literal::from('y'), Literal::from('z'), Literal::from('w')]));
+/// let joinand2 = LGroupTerm::from(Literal::from('u'));
 /// let mut joinands = BTreeSet::new();
 /// joinands.insert(joinand1);
 /// joinands.insert(joinand2);

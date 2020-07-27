@@ -21,7 +21,7 @@ mod parse_l_group_term;
 /// # use terms::free_group_term::*;
 /// # use terms::literal::*;
 /// # use terms::l_group_term::*;
-/// let x = FreeGroupTerm::from(lit('x'));
+/// let x = FreeGroupTerm::from(Literal::from('x'));
 /// let lGroupTerm = LGroupTerm::Atom(x);
 /// ```
 /// a `Meet`, a `Join`, or a `Product`. `Meet`s and `Join`s take `BTreeSet`s as arguments:
@@ -31,16 +31,16 @@ mod parse_l_group_term;
 /// # use terms::l_group_term::*;
 /// use std::collections::BTreeSet;
 /// let mut meetands = BTreeSet::new();
-/// meetands.insert(LGroupTerm::from(lit('x')));
-/// meetands.insert(LGroupTerm::from(lit('y')));
+/// meetands.insert(LGroupTerm::from(Literal::from('x')));
+/// meetands.insert(LGroupTerm::from(Literal::from('y')));
 /// let meet = LGroupTerm::Meet(meetands);
 /// ```
 /// whereas `Product`s take `Vec<LGroupTerm>`s:
 /// ```
 /// # use terms::free_group_term::*;
-/// # use terms::literal::lit;
 /// # use terms::l_group_term::*;
-/// let factors = vec![LGroupTerm::from(lit('x')), LGroupTerm::from(lit('y'))];
+/// # use terms::literal::*;
+/// let factors = vec![LGroupTerm::from(Literal::from('x')), LGroupTerm::from(Literal::from('y'))];
 /// let product = LGroupTerm::Prod(factors);
 /// ```
 /// This models associativity of meets, joins, and products, and takes into
@@ -75,21 +75,21 @@ impl From<&str> for LGroupTerm {
     /// meets are denoted by `^`, joins by `v`, and inverses by prefix `-`. e.g.,
     /// ```
     /// use terms::l_group_term::LGroupTerm;
-    /// use terms::literal::lit;
+    /// use terms::literal::Literal;
     /// use terms::Term;
-    /// let term = LGroupTerm::from(lit('x').inverse());
+    /// let term = LGroupTerm::from(Literal::from('x').inverse());
     /// assert_eq!(term, LGroupTerm::from("-x"));
     /// ```
     /// Multiplication of terms bigger than literals is also by writing them next to
     /// each other:
     /// ```
     /// # use terms::l_group_term::LGroupTerm;
-    /// # use terms::literal::lit;
+    /// # use terms::literal::Literal;
     /// use std::collections::BTreeSet;
     /// let mut meetands = BTreeSet::new();
-    /// meetands.insert(LGroupTerm::from(lit('y')));
-    /// meetands.insert(LGroupTerm::from(lit('z')));
-    /// let term = LGroupTerm::from(lit('x')) *  LGroupTerm::Meet(meetands);
+    /// meetands.insert(LGroupTerm::from(Literal::from('y')));
+    /// meetands.insert(LGroupTerm::from(Literal::from('z')));
+    /// let term = LGroupTerm::from(Literal::from('x')) *  LGroupTerm::Meet(meetands);
     /// assert_eq!(term, LGroupTerm::from("x(y^z)"));
     /// ```
     fn from(s: &str) -> LGroupTerm {
@@ -195,9 +195,9 @@ mod tests {
 
     #[test]
     fn test_inverse_atom() {
-        let x = lit('x');
-        let y = lit('y');
-        let z = lit('z');
+        let x = Literal::from('x');
+        let y = Literal::from('y');
+        let z = Literal::from('z');
         let xyz = FreeGroupTerm { literals: vec![x,y,z] };
         let term = LGroupTerm::Atom(xyz);
         let inverse = LGroupTerm::Atom(FreeGroupTerm { literals: vec![z.inverse(), y.inverse(), x.inverse()]});
@@ -206,8 +206,8 @@ mod tests {
 
     #[test]
     fn test_inverse_meet() {
-        let x = LGroupTerm::Atom(FreeGroupTerm { literals: vec![lit('x')]});
-        let y = LGroupTerm::Atom(FreeGroupTerm { literals: vec![lit('y')]});
+        let x = LGroupTerm::Atom(FreeGroupTerm { literals: vec![Literal::from('x')]});
+        let y = LGroupTerm::Atom(FreeGroupTerm { literals: vec![Literal::from('y')]});
         let mut meetands = BTreeSet::new();
         meetands.insert(x.clone());
         meetands.insert(y.clone());
@@ -221,8 +221,8 @@ mod tests {
 
     #[test]
     fn test_inverse_join() {
-        let x = LGroupTerm::Atom(FreeGroupTerm { literals: vec![lit('x')]});
-        let y = LGroupTerm::Atom(FreeGroupTerm { literals: vec![lit('y')]});
+        let x = LGroupTerm::Atom(FreeGroupTerm { literals: vec![Literal::from('x')]});
+        let y = LGroupTerm::Atom(FreeGroupTerm { literals: vec![Literal::from('y')]});
         let mut joinands = BTreeSet::new();
         joinands.insert(x.clone());
         joinands.insert(y.clone());
@@ -236,9 +236,9 @@ mod tests {
 
     #[test]
     fn test_inverse_recursive() {
-        let x = LGroupTerm::Atom(FreeGroupTerm { literals: vec![lit('x')]});
-        let y = LGroupTerm::Atom(FreeGroupTerm { literals: vec![lit('y')]});
-        let z = LGroupTerm::Atom(FreeGroupTerm { literals: vec![lit('z')]});
+        let x = LGroupTerm::Atom(FreeGroupTerm { literals: vec![Literal::from('x')]});
+        let y = LGroupTerm::Atom(FreeGroupTerm { literals: vec![Literal::from('y')]});
+        let z = LGroupTerm::Atom(FreeGroupTerm { literals: vec![Literal::from('z')]});
         let z_inv = z.inverse();
 
         let mut meetands = BTreeSet::new();
@@ -259,20 +259,20 @@ mod tests {
 
     #[test]
     fn test_mul_atoms() {
-        let x = LGroupTerm::from(lit('x'));
-        let y = LGroupTerm::from(lit('y'));
-        assert_eq!(LGroupTerm::Atom(FreeGroupTerm::new(vec![lit('x'), lit('y')])), x * y)
+        let x = LGroupTerm::from(Literal::from('x'));
+        let y = LGroupTerm::from(Literal::from('y'));
+        assert_eq!(LGroupTerm::Atom(FreeGroupTerm::new(vec![Literal::from('x'), Literal::from('y')])), x * y)
     }
 
     #[test]
     fn test_to_string() {
         let mut inner_meetands = BTreeSet::new();
-        inner_meetands.insert(LGroupTerm::from(lit('x')));
-        inner_meetands.insert(LGroupTerm::from(lit('y')));
+        inner_meetands.insert(LGroupTerm::from(Literal::from('x')));
+        inner_meetands.insert(LGroupTerm::from(Literal::from('y')));
         let inner_meet = LGroupTerm::Meet(inner_meetands);
         let mut meetands = BTreeSet::new();
         meetands.insert(inner_meet);
-        meetands.insert(LGroupTerm::from(lit('z')));
+        meetands.insert(LGroupTerm::from(Literal::from('z')));
         let meet = LGroupTerm::Meet(meetands);
         assert_eq!(String::from("(z ^ (x ^ y))"), meet.to_string());
     }

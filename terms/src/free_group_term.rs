@@ -17,7 +17,7 @@ mod parse_free_group_term;
 /// ```
 /// # use terms::free_group_term::*;
 /// # use terms::literal::*;
-/// let term = FreeGroupTerm::new(vec![lit('x'), lit('y')]);
+/// let term = FreeGroupTerm::new(vec![Literal::from('x'), Literal::from('y')]);
 /// ```
 /// In this case, `term` encodes the element xy of a free group.
 /// 
@@ -26,7 +26,7 @@ mod parse_free_group_term;
 /// # use terms::free_group_term::*;
 /// # use terms::literal::*;
 /// # use terms::*;
-/// let term = FreeGroupTerm::new(vec![lit('x'), lit('x').inverse()]);
+/// let term = FreeGroupTerm::new(vec![Literal::from('x'), Literal::from('x').inverse()]);
 /// assert_eq!(String::from("e"), term.to_string());
 /// ```
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -165,31 +165,31 @@ mod tests {
 
      #[test]
     fn test_reduce() {
-        let x = lit('x');
-        let x_inv = lit('x').inverse();
-        let y = lit('y');
+        let x = Literal::from('x');
+        let x_inv = Literal::from('x').inverse();
+        let y = Literal::from('y');
         
         let result = FreeGroupTerm { literals: vec![x, x_inv, y] };
         assert_eq!(FreeGroupTerm { literals: vec![y] }, result.reduced());
 
-        let x = lit('x');
-        let y = lit('y');
-        let z = lit('z');
+        let x = Literal::from('x');
+        let y = Literal::from('y');
+        let z = Literal::from('z');
         let result = FreeGroupTerm { literals: vec![x, y, z, z.inverse(), y.inverse(), x.inverse()]};
         assert_eq!(FreeGroupTerm::new(vec![]), result.reduced());
     }
 
     #[test]
     fn test_to_string() {
-        let term = FreeGroupTerm::new(vec![lit('x'), lit('y'), lit('z')]);
+        let term = FreeGroupTerm::new(vec![Literal::from('x'), Literal::from('y'), Literal::from('z')]);
         assert_eq!("xyz", term.to_string());
     }
 
     #[test]
     fn test_inverse() {
-        let x = lit('x');
-        let y = lit('y');
-        let z = lit('z');
+        let x = Literal::from('x');
+        let y = Literal::from('y');
+        let z = Literal::from('z');
         let term = FreeGroupTerm { literals: vec![x,y,z] };
         let other_term = FreeGroupTerm { literals: vec![z.inverse(), y.inverse(), x.inverse()] };
         assert_eq!(other_term, term.inverse())
@@ -197,15 +197,15 @@ mod tests {
 
     #[test]
     fn test_mul() {
-        let x = FreeGroupTerm::new(vec![lit('x')]);
-        let x_inv = FreeGroupTerm::new(vec![lit('x').inverse()]);
+        let x = FreeGroupTerm::new(vec![Literal::from('x')]);
+        let x_inv = FreeGroupTerm::new(vec![Literal::from('x').inverse()]);
         assert_eq!(IDENTITY, x*x_inv);
     }
 
     #[test]
     fn test_mul_assign() {
-        let mut term = FreeGroupTerm::from(lit('x').inverse());
-        term *= FreeGroupTerm::from(lit('x'));
+        let mut term = FreeGroupTerm::from(Literal::from('x').inverse());
+        term *= FreeGroupTerm::from(Literal::from('x'));
         assert_eq!(FreeGroupTerm::new(Vec::new()), term);
     }
 }

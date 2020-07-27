@@ -81,17 +81,17 @@ impl CNF {
     /// # Examples
     /// Basic usage:
     /// ```
-    /// use terms::literal::lit;
+    /// use terms::literal::Literal;
     /// use terms::free_group_term::FreeGroupTerm;
     /// use std::collections::BTreeSet;
     /// use cnf::normal_cnf::CNF;
     /// let mut meetands = BTreeSet::new();
     /// let mut first_meetand = BTreeSet::new();
     /// let mut second_meetand = BTreeSet::new();
-    /// let first_joinand = FreeGroupTerm::from(lit('x'));
-    /// let second_joinand = FreeGroupTerm::from(lit('y'));
-    /// let third_joinand = FreeGroupTerm::from(lit('z'));
-    /// let fourth_joinand = FreeGroupTerm::from(lit('w'));
+    /// let first_joinand = FreeGroupTerm::from(Literal::from('x'));
+    /// let second_joinand = FreeGroupTerm::from(Literal::from('y'));
+    /// let third_joinand = FreeGroupTerm::from(Literal::from('z'));
+    /// let fourth_joinand = FreeGroupTerm::from(Literal::from('w'));
     ///
     /// first_meetand.insert(first_joinand);
     /// first_meetand.insert(second_joinand);
@@ -240,17 +240,17 @@ fn is_in_cnf(term: &LGroupTerm) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use terms::literal::lit;
+    use terms::literal::Literal;
 
     #[test]
     fn test_to_string() {
         let mut meetands = BTreeSet::new();
         let mut first_meetand = BTreeSet::new();
         let mut second_meetand = BTreeSet::new();
-        let first_joinand = FreeGroupTerm::from(lit('x'));
-        let second_joinand = FreeGroupTerm::from(lit('y'));
-        let third_joinand = FreeGroupTerm::from(lit('z'));
-        let fourth_joinand = FreeGroupTerm::from(lit('w'));
+        let first_joinand = FreeGroupTerm::from(Literal::from('x'));
+        let second_joinand = FreeGroupTerm::from(Literal::from('y'));
+        let third_joinand = FreeGroupTerm::from(Literal::from('z'));
+        let fourth_joinand = FreeGroupTerm::from(Literal::from('w'));
 
         first_meetand.insert(first_joinand);
         first_meetand.insert(second_joinand);

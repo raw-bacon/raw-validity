@@ -2,6 +2,35 @@ use super::Term;
 use super::parsing_error::ParsingError;
 
 /// The smallest term (apart from the identity).
+/// 
+/// # Examples
+/// Literals can be parsed from a string.
+/// Basic usage:
+/// Symbols with ids are okay.
+/// ```
+/// use terms::literal::Literal;
+/// let literal = Literal::new('x', 31, true);
+/// assert_eq!(literal, Literal::from("X31"));
+/// ```
+/// So are symbols without.
+/// ```
+/// # use terms::literal::Literal;
+/// let literal = Literal::new('y', 0, false);
+/// assert_eq!(literal, Literal::from("y"));
+/// ```
+/// 
+/// Alternatively, literals can be constructed from characters:
+/// 
+/// sets `id` to zero and `is_inverted` to false.
+/// 
+/// # Examples
+/// Basic usage:
+/// ```
+/// use terms::literal::*;
+/// let literal1 = Literal::from('x');
+/// let literal2 = Literal::new('x', 0, false);
+/// assert_eq!(literal1, literal2);
+/// ```
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Literal {
     pub character: char,
@@ -19,23 +48,13 @@ impl Literal {
     }
 }
 
-/// shorthand constructor for a literal
-/// 
-/// sets `id` to zero and `is_inverted` to false.
-/// 
-/// # Examples
-/// Basic usage:
-/// ```
-/// use terms::literal::*;
-/// let literal1 = lit('x');
-/// let literal2 = Literal::new('x', 0, false);
-/// assert_eq!(literal1, literal2);
-/// ```
-pub fn lit(c: char) -> Literal {
-    Literal {
-        character: c,
-        id: 0,
-        is_inverted: false
+impl From<char> for Literal {
+    fn from(c: char) -> Literal {
+        Literal {
+            character: c,
+            id: 0,
+            is_inverted: false
+        }
     }
 }
 
@@ -68,22 +87,6 @@ impl ToString for Literal {
 }
 
 impl From<&str> for Literal {
-    /// parses a literal from a string. 
-    /// 
-    /// # Examples
-    /// Basic usage:
-    /// Symbols with ids are okay.
-    /// ```
-    /// use terms::literal::Literal;
-    /// let literal = Literal::new('x', 31, true);
-    /// assert_eq!(literal, Literal::from("X31"));
-    /// ```
-    /// So are symbols without.
-    /// ```
-    /// # use terms::literal::Literal;
-    /// let literal = Literal::new('y', 0, false);
-    /// assert_eq!(literal, Literal::from("y"));
-    /// ```
     fn from(s: &str) -> Literal {
         let result = parse(s);
         match result {
@@ -99,8 +102,8 @@ mod tests {
 
     #[test]
     fn test_literal_to_string() {
-        assert_eq!("x", lit('x').to_string());
-        assert_eq!("X", lit ('x').inverse().to_string());
+        assert_eq!("x", Literal::from('x').to_string());
+        assert_eq!("X", Literal::from('x').inverse().to_string());
         let l = Literal::new('x', 31, true);
         assert_eq!("X31", l.to_string());
     }
