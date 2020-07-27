@@ -19,12 +19,8 @@ use super::parsing_error::ParsingError;
 /// assert_eq!(literal, Literal::from("y"));
 /// ```
 /// 
-/// Alternatively, literals can be constructed from characters:
-/// 
-/// sets `id` to zero and `is_inverted` to false.
-/// 
-/// # Examples
-/// Basic usage:
+/// Alternatively, literals can be constructed from characters.
+/// This sets `id` to zero and `is_inverted` to false.
 /// ```
 /// use terms::literal::*;
 /// let literal1 = Literal::from('x');
