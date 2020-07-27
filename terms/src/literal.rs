@@ -66,13 +66,12 @@ impl Term for Literal {
 
 impl ToString for Literal {
     fn to_string(&self) -> String {
-        let mut result = String::from("");
-        if !self.is_inverted {
-            result.push(self.character);
-        } else {
-            let upper = self.character.to_uppercase();
-            for c in upper {
-                result.push(c);
+        let mut result = String::new();
+        match self.is_inverted {
+            false => result.push(self.character),
+            true => {
+                let upper = self.character.to_uppercase();
+                for c in upper { result.push(c); }
             }
         }
         if self.id != 0 {
