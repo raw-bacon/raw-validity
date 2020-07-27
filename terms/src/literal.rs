@@ -101,7 +101,10 @@ fn parse(s: &str) -> Result<Literal, ParsingError> {
         let mut lower_case: std::char::ToLowercase;
         match s.chars().next() {
             None => return Err(ParsingError::EmptyLiteralError),
-            Some(c) => { is_inverted = c.is_uppercase(); lower_case = c.to_lowercase(); }
+            Some(c) => { 
+                is_inverted = c.is_uppercase(); 
+                lower_case = c.to_lowercase(); 
+            }
         };
         let character: char;
         match lower_case.next() {
