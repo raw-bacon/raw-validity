@@ -123,11 +123,11 @@ fn parse(s: &str) -> Result<Literal, ParsingError> {
         };
         if l == 1 { return Ok(Literal::new(character, 0, is_inverted)); }
 
-        let id = without_first(s).parse::<usize>().expect(
-            "could not parse ID. a literal should be a character, possibly followed
-            by an id (a non-negative integer)"
-        );
-        return Ok(Literal::new(character, id, is_inverted))
+        let result = without_first(s).parse::<usize>();
+        match result {
+            Ok(id) => Ok(Literal::new(character, id, is_inverted)),
+            Err(e) => Err(ParsingError::InvalidLiteralError(e.to_string()))
+        }
     }
 }
 
