@@ -1,9 +1,10 @@
 use super::literal::*;
 use super::free_group_term::FreeGroupTerm;
 use super::Term;
+use std::ops::Mul;
 
 /// Short means length at most three
-#[derive(Eq, PartialOrd, PartialEq, Ord, Debug)]
+#[derive(Eq, PartialOrd, PartialEq, Ord, Debug, Clone, Copy)]
 pub struct ShortFreeGroupTerm {
     pub left:  Option<Literal>,
     pub mid:   Option<Literal>,
@@ -85,5 +86,32 @@ impl Term for ShortFreeGroupTerm {
             }
             _ => panic!("invalid short term ...")
         }
+    }
+}
+
+pub trait Len {
+    fn len(&self) -> usize;
+}
+
+impl Len for ShortFreeGroupTerm {
+    fn len(&self) -> usize {
+        match (self.left, self.mid, self.right) {
+            (None, None, None)          => 0,
+            (Some(_), None, None)       => 1,
+            (Some(_), Some(_), None)    => 2,
+            (Some(_), Some(_), Some(_)) => 3,
+            _                           => panic!("Invalid short free group term!")
+        }
+    }
+}
+
+pub struct LongFreeGroupTermError;
+
+impl Mul for ShortFreeGroupTerm {
+    type Output = ShortFreeGroupTerm;
+
+    /// Warning: This does not check whether the product is indeed short.
+    fn mul(self, other: ShortFreeGroupTerm) -> ShortFreeGroupTerm {
+        ShortFreeGroupTerm::from(FreeGroupTerm::from(self) * FreeGroupTerm::from(other))
     }
 }

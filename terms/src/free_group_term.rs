@@ -1,5 +1,6 @@
 use super::*;
 use super::literal::*;
+use super::short_free_group_term::ShortFreeGroupTerm;
 use std::ops::{Mul, MulAssign};
 
 mod parse_free_group_term;
@@ -29,6 +30,28 @@ mod parse_free_group_term;
 /// let term = Literal::from('x') * Literal::from('x').inverse();
 /// assert_eq!(String::from("e"), term.to_string());
 /// ```
+/// 
+/// Can also be constructed from strings:
+/// `FreeGroupTerm::from(&str)` parses a free group term from a string.
+/// 
+/// This ignores all non-alphanumeric characters, such as `*`. Perhaps dangerously,
+/// this also ignores symbols like `^`, and treats `v` as the name of a symbol.
+/// The input is parsed by 
+/// 
+/// # Examples
+/// Basic usage:
+/// ```
+/// use terms::literal::Literal;
+/// use terms::free_group_term::FreeGroupTerm;
+/// // this is equivalent to: 
+/// // let string = "X31yz39";
+/// let string = "X3 1*yz39 ";
+/// let x = Literal::new('x', 31, true);
+/// let y = Literal::new('y', 0, false);
+/// let z = Literal::new('z', 39, false);
+/// let term = FreeGroupTerm::new(vec![x, y, z]);
+/// assert_eq!(term, FreeGroupTerm::from(string));
+/// ```
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct FreeGroupTerm {
     pub literals: Vec<literal::Literal>
@@ -55,31 +78,23 @@ impl From<char> for FreeGroupTerm {
 }
 
 impl From<&str> for FreeGroupTerm {
-    /// parses a free group term from a string.
-    /// 
-    /// This ignores all non-alphanumeric characters, such as `*`. Perhaps dangerously,
-    /// this also ignores symbols like `^`, and treats `v` as the name of a symbol.
-    /// The input is parsed by 
-    /// 
-    /// # Examples
-    /// Basic usage:
-    /// ```
-    /// use terms::literal::Literal;
-    /// use terms::free_group_term::FreeGroupTerm;
-    /// // this is equivalent to: 
-    /// // let string = "X31yz39";
-    /// let string = "X3 1*yz39 ";
-    /// let x = Literal::new('x', 31, true);
-    /// let y = Literal::new('y', 0, false);
-    /// let z = Literal::new('z', 39, false);
-    /// let term = FreeGroupTerm::new(vec![x, y, z]);
-    /// assert_eq!(term, FreeGroupTerm::from(string));
-    /// ```
     fn from(s: &str) -> FreeGroupTerm {
         let result = parse_free_group_term::parse(s);
         match result {
             Ok(t) => t,
             Err(e) => panic!(e)
+        }
+    }
+}
+
+impl From<ShortFreeGroupTerm> for FreeGroupTerm {
+    fn from(t: ShortFreeGroupTerm) -> FreeGroupTerm {
+        match (t.left, t.mid, t.right) {
+            (None, None, None) => FreeGroupTerm::new(Vec::new()),
+            (Some(x), None, None) => FreeGroupTerm::from(x),
+            (Some(x), Some(y), None) => x * y,
+            (Some(x), Some(y), Some(z)) => x * y * z,
+            _ => panic!("Invalid ShortFreeGroupTerm")
         }
     }
 }

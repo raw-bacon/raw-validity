@@ -455,6 +455,9 @@ dependencies = [
 [[package]]
 name = "truncated"
 version = "0.1.0"
+dependencies = [
+ "terms 0.1.0",
+]
 
 [[package]]
 name = "unicode-width"
