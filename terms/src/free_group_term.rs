@@ -101,13 +101,19 @@ impl Mul for FreeGroupTerm {
     type Output = FreeGroupTerm;
     
     fn mul(self, other: FreeGroupTerm) -> FreeGroupTerm {
-        if self.literals.len() == 0 {
-            return other;
-        } else if other.literals.len() == 0 {
-            return self;
-        } else {
-            return FreeGroupTerm::new([&self.literals[..], &other.literals[..]].concat());
+        if self.literals.len() == 0 { other } 
+        else if other.literals.len() == 0 { self } 
+        else {
+            FreeGroupTerm::new([&self.literals[..], &other.literals[..]].concat())
         }
+    }
+}
+
+impl Mul<Literal> for FreeGroupTerm {
+    type Output = FreeGroupTerm;
+
+    fn mul(self, other: Literal) -> FreeGroupTerm {
+        self * FreeGroupTerm::from(other)
     }
 }
 

@@ -19,7 +19,11 @@ use super::normal_cnf::CNF;
 /// use terms::free_group_term::FreeGroupTerm;
 /// use cnf::three_cnf::ThreeCNF;
 /// use std::collections::BTreeSet;
-/// let term = LGroupTerm::from(FreeGroupTerm::new(vec![Literal::from('x'), Literal::from('y'), Literal::from('z'), Literal::from('w')]));
+/// let term = LGroupTerm::from(
+///     Literal::from('x') * Literal::from('y') 
+///                        * Literal::from('z') 
+///                        * Literal::from('w')
+/// );
 /// let three_cnf = ThreeCNF::from(term);
 /// let empty_three_cnf = ThreeCNF { meetands: BTreeSet::new() };
 /// assert_eq!(empty_three_cnf, three_cnf);
