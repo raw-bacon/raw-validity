@@ -92,18 +92,6 @@ impl From<&str> for Literal {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_literal_to_string() {
-        assert_eq!("x", Literal::from('x').to_string());
-        assert_eq!("X", Literal::from('x').inverse().to_string());
-        let l = Literal::new('x', 31, true);
-        assert_eq!("X31", l.to_string());
-    }
-}
 
 fn parse(s: &str) -> Result<Literal, ParsingError> {
     let l = s.len();
@@ -138,4 +126,18 @@ fn without_first(string: &str) -> String {
     for c in iterator { result.push(c); }
 
     return result;
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_literal_to_string() {
+        assert_eq!("x", Literal::from('x').to_string());
+        assert_eq!("X", Literal::from('x').inverse().to_string());
+        let l = Literal::new('x', 31, true);
+        assert_eq!("X31", l.to_string());
+    }
 }
