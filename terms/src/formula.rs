@@ -1,6 +1,6 @@
 use super::l_group_term::LGroupTerm;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum LGroupFormula {
     LGroupEquation(LGroupTerm, LGroupTerm),
     LGroupInequation(LGroupTerm, LGroupTerm)

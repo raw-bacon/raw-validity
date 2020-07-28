@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 terms = { path = "../terms" }
 cnf = { path = "../cnf" }
+validity = { path = "../validity" }
