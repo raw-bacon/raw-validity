@@ -180,6 +180,7 @@ version = "0.1.0"
 dependencies = [
  "cnf 0.1.0",
  "terms 0.1.0",
+ "validity 0.1.0",
 ]
 
 [[package]]

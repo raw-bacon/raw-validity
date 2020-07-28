@@ -2,7 +2,6 @@ use std::collections::{BTreeSet, BTreeMap};
 use terms::short_free_group_term::*;
 use terms::literal::Literal;
 use terms::Term;
-use super::Closable;
 
 /// Represents the closed ball of radius 3 around e in the Cayley
 /// graph of a free group with respect to the standard free generating set.
@@ -23,7 +22,7 @@ use super::Closable;
 /// gens.insert(Literal::from('x'));
 /// gens.insert(Literal::from('y'));
 /// gens.insert(Literal::from('z'));
-/// let truncated = TruncatedSubgroup::new(Box::new(set), gens);
+/// let truncated = TruncatedSubgroup::new(Box::new(set), gens, false, false, false);
 /// let mut expected = Box::new(BTreeSet::new());
 /// expected.insert(s);
 /// expected.insert(t);
@@ -32,21 +31,27 @@ use super::Closable;
 /// ```
 #[derive(Debug)]
 pub struct TruncatedSubgroup {
-    pub elements:                Box<BTreeSet<ShortFreeGroupTerm>>,
+    pub elements:            Box<BTreeSet<ShortFreeGroupTerm>>,
     // pub gens_of_ambient_group:   BTreeSet<Literal>,
-    pub starts_with_single:      Box<BTreeMap<Literal, BTreeSet<ShortFreeGroupTerm>>>,
-    pub ends_with_single:        Box<BTreeMap<Literal, BTreeSet<ShortFreeGroupTerm>>>,
-    pub starts_with_pair:        Box<BTreeMap<(Literal, Literal), BTreeSet<ShortFreeGroupTerm>>>,
-    pub ends_with_pair:          Box<BTreeMap<(Literal, Literal), BTreeSet<ShortFreeGroupTerm>>>,
-    pub length_one:              Box<BTreeSet<ShortFreeGroupTerm>>,
-    pub length_two:              Box<BTreeSet<ShortFreeGroupTerm>>,
-    pub length_three:            Box<BTreeSet<ShortFreeGroupTerm>>
+    starts_with_single:      Box<BTreeMap<Literal, BTreeSet<ShortFreeGroupTerm>>>,
+    previously_new:          BTreeSet<ShortFreeGroupTerm>,
+    ends_with_single:        Box<BTreeMap<Literal, BTreeSet<ShortFreeGroupTerm>>>,
+    starts_with_pair:        Box<BTreeMap<(Literal, Literal), BTreeSet<ShortFreeGroupTerm>>>,
+    ends_with_pair:          Box<BTreeMap<(Literal, Literal), BTreeSet<ShortFreeGroupTerm>>>,
+    length_one:              Box<BTreeSet<ShortFreeGroupTerm>>,
+    length_two:              Box<BTreeSet<ShortFreeGroupTerm>>,
+    length_three:            Box<BTreeSet<ShortFreeGroupTerm>>,
+    verbose:                 bool,
+    break_at_identity:       bool
 }
 
 impl TruncatedSubgroup {
     pub fn new(
-        elements: Box<BTreeSet<ShortFreeGroupTerm>>, 
-        gens:     BTreeSet<Literal>
+        elements:          Box<BTreeSet<ShortFreeGroupTerm>>, 
+        gens:              BTreeSet<Literal>,
+        closed:            bool,
+        break_at_identity: bool,
+        verbose:           bool
     ) -> TruncatedSubgroup {
         // close gens under inversion
         let mut gens_of_ambient_group = BTreeSet::new();
@@ -99,71 +104,100 @@ impl TruncatedSubgroup {
             };
         }
 
+        let previously_new: BTreeSet<ShortFreeGroupTerm>;
+        if !closed {
+            previously_new = *elements.clone()
+        } else {
+            previously_new = BTreeSet::new();
+        }
+
         let mut sub = TruncatedSubgroup {
-            elements:              elements,
+            elements:              elements.clone(),
             // gens_of_ambient_group: gens_of_ambient_group,
+            previously_new:        previously_new,
             starts_with_single:    starts_with_single,
             starts_with_pair:      starts_with_pair,
             ends_with_single:      ends_with_single,
             ends_with_pair:        ends_with_pair,
             length_one:            length_one,
             length_two:            length_two,
-            length_three:          length_three
+            length_three:          length_three,
+            break_at_identity:     break_at_identity,
+            verbose:               verbose
         };
-        sub.close();
+        if !closed { sub.close(); }
         return sub;
     }
 }
 
+pub trait Insert {
+    /// Inserts `element` and returns what was newly added.
+    fn insert(&mut self, element: ShortFreeGroupTerm) -> BTreeSet<ShortFreeGroupTerm>;
+}
+
+impl Insert for TruncatedSubgroup {
+    fn insert(&mut self, element: ShortFreeGroupTerm) -> BTreeSet<ShortFreeGroupTerm> {
+        self.elements.insert(element);
+        self.previously_new.insert(element);
+        return self.close();
+    }
+}
+
+trait Closable {
+    fn close(&mut self) -> BTreeSet<ShortFreeGroupTerm>;
+}
+
 impl Closable for TruncatedSubgroup {
-    fn close(&mut self) {
+    fn close(&mut self) -> BTreeSet<ShortFreeGroupTerm> {
+        let mut output = BTreeSet::new();
         let mut found_new_element = true;
-        let mut new_elements_buffer: BTreeSet<ShortFreeGroupTerm> = BTreeSet::new();
+        let mut new_elements_buffer: BTreeSet<ShortFreeGroupTerm> = self.previously_new.clone();
+        /*if self.verbose { 
+            println!("\nClosing under multiplication."); 
+        }*/
         while found_new_element {
-            /* debug
-            let mut debug_string = String::new();
-            debug_string.push_str("Start with: ");
-            for debug_element in &self.elements {
-                debug_string.push_str(debug_element.to_string().as_str());
-                debug_string.push(',');
+            /*if self.verbose {
+                println!("Currently {} elements, {} of which are not checked.", 
+                         self.elements.len(), 
+                         new_elements_buffer.len());
+            }*/
+
+            if self.break_at_identity {
+                if self.elements.contains(&ShortFreeGroupTerm::new(None, None, None)) {
+                    return output;
+                }
             }
-            debug_string.pop();
-            debug_string.push_str("\nNewly found: ");
-            for debug_element in &new_elements_buffer {
-                debug_string.push_str(debug_element.to_string().as_str());
-                debug_string.push(',');
-            }
-            println!("{}\n\n", debug_string);
-            end debug */
-            
+
             found_new_element = false;
-            for y in new_elements_buffer {
+            for y in &new_elements_buffer {
                 self.elements.insert(y.clone());
+                output.insert(y.clone());
                 match (y.left, y.mid, y.right) {
                     (Some(a), None, None) => {
-                        self.length_one.insert(y);
-                        self.starts_with_single.get_mut(&a).unwrap().insert(y);
-                        self.ends_with_single.get_mut(&a).unwrap().insert(y);
+                        self.length_one.insert(*y);
+                        self.starts_with_single.get_mut(&a).unwrap().insert(*y);
+                        self.ends_with_single.get_mut(&a).unwrap().insert(*y);
                     },
                     (Some(a), Some(b), None) => {
-                        self.length_two.insert(y);
-                        self.starts_with_single.get_mut(&a).unwrap().insert(y);
-                        self.ends_with_single.get_mut(&b).unwrap().insert(y);
-                        self.starts_with_pair.get_mut(&(a, b)).unwrap().insert(y);
-                        self.ends_with_pair.get_mut(&(a, b)).unwrap().insert(y);
+                        self.length_two.insert(*y);
+                        self.starts_with_single.get_mut(&a).unwrap().insert(*y);
+                        self.ends_with_single.get_mut(&b).unwrap().insert(*y);
+                        self.starts_with_pair.get_mut(&(a, b)).unwrap().insert(*y);
+                        self.ends_with_pair.get_mut(&(a, b)).unwrap().insert(*y);
                     },
                     (Some(a), Some(b), Some(c)) => {
-                        self.length_three.insert(y);
-                        self.starts_with_single.get_mut(&a).unwrap().insert(y);
-                        self.ends_with_single.get_mut(&c).unwrap().insert(y);
-                        self.starts_with_pair.get_mut(&(a, b)).unwrap().insert(y);
-                        self.ends_with_pair.get_mut(&(b, c)).unwrap().insert(y);
+                        self.length_three.insert(*y);
+                        self.starts_with_single.get_mut(&a).unwrap().insert(*y);
+                        self.ends_with_single.get_mut(&c).unwrap().insert(*y);
+                        self.starts_with_pair.get_mut(&(a, b)).unwrap().insert(*y);
+                        self.ends_with_pair.get_mut(&(b, c)).unwrap().insert(*y);
                     }
                     _ => {} // is identity
                 };
             }
+            self.previously_new = new_elements_buffer.clone();
             new_elements_buffer = BTreeSet::new();
-            for x in &*self.elements {
+            for x in &self.previously_new {
                 match x.len() {
                     0 => {},
                     1 => {
@@ -307,5 +341,6 @@ impl Closable for TruncatedSubgroup {
                 };
             }
         }
+        return output;
     }
 }
