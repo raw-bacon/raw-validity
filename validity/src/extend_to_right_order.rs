@@ -1,6 +1,7 @@
-use truncated::truncated_group::TruncatedGroup;
+//use truncated::truncated_group::TruncatedGroup;
+use truncated::tiny_truncated_group::TinyTruncatedGroup;
 use truncated::truncated_subgroup::TruncatedSubgroup;
-use truncated::truncated_group::ElementsExceptIdentity;
+use truncated::tiny_truncated_group::ElementsExceptIdentity;
 use terms::short_free_group_term::ShortFreeGroupTerm;
 use std::collections::BTreeSet;
 use terms::short_free_group_term::Len;
@@ -30,7 +31,7 @@ pub (super) fn extend_to_right_order(elements: Box<BTreeSet<ShortFreeGroupTerm>>
     if verbose {
         println!("Computing the ambient group.");
     }
-    let ambient_group = TruncatedGroup::new(all_literals.clone());
+    let ambient_group = TinyTruncatedGroup::new(all_literals.clone());
     if verbose {
         println!("The ambient group has size {}.", ambient_group.elements.len());
     }
@@ -52,7 +53,7 @@ pub (super) fn extend_to_right_order(elements: Box<BTreeSet<ShortFreeGroupTerm>>
     extends_helper(&ambient_group, &subgroup, 1, verbose)
 }
 
-fn strong_complement(subgroup: &TruncatedSubgroup, ambient_group: &TruncatedGroup) -> BTreeSet<ShortFreeGroupTerm> {
+fn strong_complement(subgroup: &TruncatedSubgroup, ambient_group: &TinyTruncatedGroup) -> BTreeSet<ShortFreeGroupTerm> {
     let mut terms_and_inverses = subgroup.elements.clone();
     for x in &*subgroup.elements {
         terms_and_inverses.insert(x.inverse());
@@ -66,7 +67,7 @@ fn strong_complement(subgroup: &TruncatedSubgroup, ambient_group: &TruncatedGrou
 }
 
 fn extends_helper(
-        ambient_group: &TruncatedGroup, 
+        ambient_group: &TinyTruncatedGroup, 
         subgroup: &TruncatedSubgroup,
         recursion_depth: usize,
         verbose: bool) -> bool {
@@ -94,12 +95,12 @@ fn extends_helper(
 
     let complement = strong_complement(&subgroup, &ambient_group);
     let minimal = complement.iter().min_by_key(|x| x.len()).unwrap();
+    // let minimal = complement.iter().next().unwrap();
 
     for t in &[*minimal, minimal.inverse()] {
         
         if verbose {
-            println!("Currently at recursion depth {}.", recursion_depth);
-            // println!("Adding {}.", t.to_string());
+            println!("Currently at recursion depth {}. Adding {}.", recursion_depth, t.to_string());
         }
         let mut new_subgroup = TruncatedSubgroup::new(subgroup.elements.clone(), ambient_group.generators.clone(), true, true, verbose);
         new_subgroup.insert(*t);
@@ -118,7 +119,7 @@ fn extends_helper(
 }
 
 fn contains_all_terms_or_inverses(
-        ambient_group: &TruncatedGroup, 
+        ambient_group: &TinyTruncatedGroup, 
         subgroup: &TruncatedSubgroup) -> bool {
     for x in &ambient_group.elements_except_identity() {
         if !subgroup.elements.contains(x) && !subgroup.elements.contains(&x.inverse()) {

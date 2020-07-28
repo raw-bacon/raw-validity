@@ -1,4 +1,3 @@
-use super::truncated_subgroup::TruncatedSubgroup;
 use std::collections::BTreeSet;
 use terms::literal::Literal;
 use terms::short_free_group_term::ShortFreeGroupTerm;
@@ -29,27 +28,28 @@ pub struct TruncatedGroup {
 
 impl TruncatedGroup {
     pub fn new(generators: BTreeSet<Literal>) -> TruncatedGroup {
-        let mut sub_elements = BTreeSet::new();
+        let mut literals = BTreeSet::new();
+        let mut elements = BTreeSet::new();
         for x in &generators {
-            sub_elements.insert(ShortFreeGroupTerm::from(*x));
-            sub_elements.insert(ShortFreeGroupTerm::from(x.inverse()));
+            literals.insert(ShortFreeGroupTerm::from(*x));
+            literals.insert(ShortFreeGroupTerm::from(x.inverse()));
+            elements.insert(ShortFreeGroupTerm::from(*x));
+            elements.insert(ShortFreeGroupTerm::from(x.inverse()));
         }
-        let sub = TruncatedSubgroup::new(Box::new(sub_elements), generators.clone(), false, false, false);
+
+        for _ in &[1, 2] {
+            let mut new_elements = BTreeSet::new();
+            for literal in &literals {
+                for t in &elements {
+                    new_elements.insert(*t * *literal);
+                }
+            }
+            for x in &new_elements { elements.insert(*x); }
+        }
+
         TruncatedGroup {
             generators: generators,
-            elements:   sub.elements
+            elements:   Box::new(elements)
         }
-    }
-}
-
-pub trait ElementsExceptIdentity {
-    fn elements_except_identity(&self) -> BTreeSet<ShortFreeGroupTerm>;
-}
-
-impl ElementsExceptIdentity for TruncatedGroup {
-    fn elements_except_identity(&self) -> BTreeSet<ShortFreeGroupTerm> {
-        let mut all_elements = self.elements.clone();
-        all_elements.remove(&ShortFreeGroupTerm::new(None, None, None));
-        return *all_elements;
     }
 }
