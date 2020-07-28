@@ -4,11 +4,6 @@ use terms::literal::Literal;
 use terms::short_free_group_term::ShortFreeGroupTerm;
 use terms::Term;
 
-pub struct TruncatedGroup {
-    pub generators: BTreeSet<Literal>,
-    pub elements:   BTreeSet<ShortFreeGroupTerm>
-}
-
 /// Represents the ball of radius 3 in the Cayley graph of the free
 /// group with respect to the standard generating set.
 /// 
@@ -25,7 +20,13 @@ pub struct TruncatedGroup {
 /// let truncated_group = TruncatedGroup::new(generators);
 /// let mut expected: BTreeSet<ShortFreeGroupTerm> = BTreeSet::new();
 /// assert_eq!(53, truncated_group.elements.len());
-/// ```
+#[derive(Debug)]
+pub struct TruncatedGroup {
+    pub generators: BTreeSet<Literal>,
+    pub elements:   BTreeSet<ShortFreeGroupTerm>
+}
+
+
 impl TruncatedGroup {
     pub fn new(generators: BTreeSet<Literal>) -> TruncatedGroup {
         let mut sub_elements = BTreeSet::new();
