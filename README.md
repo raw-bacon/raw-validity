@@ -17,4 +17,4 @@ Upon running raw-validity you are prompted to enter either an equation or an ine
 In the releases section of this repository, download the file named `exec` and save it somewhere. Open a terminal in the directory containing `exec` and run `chmod +x exec` and then `./exec` (notice the dot). If you want to start the program a second time, it suffices to run `./exec`.
 
 # Alternative
-In case the above has not worked for some reason, install Rust and run `cargo run` in a clone of this repository. Note, however, that this will be a much slower experience since this way you don't get the glorious performance of the release version constructed with `cargo build release`. Consider running the release version in a Docker container instead.
+In case the above has not worked for some reason, install Rust and run `cargo run` in a clone of this repository. Note, however, that this will be a much slower experience since this way you don't get the glorious performance of the release version constructed with `cargo build --release`. Consider running the release version in a Docker container instead.
