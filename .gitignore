@@ -12,3 +12,4 @@ target/
 
 # config files for the editor
 .vscode
+.idea
