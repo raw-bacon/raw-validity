@@ -16,37 +16,92 @@ pub fn is_valid(eq: LGroupFormula) -> bool {
                                                         &ThreeCNF::from(lhs * rhs.inverse()).meetands
                                                     ).cloned().collect()
     };
-    if meetands == BTreeSet::new() {
+    if meetands.len() == 0 {
         return false;
     }
     for meetand in meetands {
-        if extend_to_right_order(meetand) {
-            return false;
+        if !extend_to_right_order(meetand) {
+            return true;
         }
     }
-    return true;
+    return false;
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     
-    fn test_valid(string: &str) {
+    fn check_valid(string: &str) {
         assert_eq!(true, is_valid(LGroupFormula::from(string)));
     }
 
-    fn test_invalid(string: &str) {
+    fn check_invalid(string: &str) {
         assert_eq!(false, is_valid(LGroupFormula::from(string)));
     }
 
     #[test]
     fn test_distributive() {
-        test_valid( "x ^ (y v z) = (x ^ y) v (x ^ z) ");
+        check_valid( "x ^ (y v z) = (x ^ y) v (x ^ z) ");
+    }
+
+    #[test]
+    fn test_mul_distributive() {
+        check_valid("x(y v z)w = xyw v xzw");
+        check_valid("x(y ^ z)w = xyw ^ xzw ");
+    }
+
+    #[test]
+    fn test_de_morgan() {
+        check_valid("X ^ Y = -(x v y)");
+        check_valid("X v Y = -(x ^ y)");
+    }
+
+    #[test]
+    fn test_metcalfe_exercise18() {
+        check_valid("e <= x v X");
+        check_valid("xy ^ e <= x v y");
+    }
+
+    #[test]
+    fn test_colacito_example_1point3point6() {
+        check_valid("e <= xx v yy v XY");
+    }
+
+    #[test]
+    fn test_prelinearity() {
+        check_valid("(Xy ^ e) v (Yx ^ e) = e");
+        check_valid("(xY ^ e) v (yX ^ e) = e");
     }
 
     #[test]
     fn test_commutativity() {
-        test_invalid("xy = yx");
+        check_invalid("xy = yx");
     }
 
+    #[test]
+    fn test_colacito_example_1point3point7() {
+        check_invalid("e <= xx v xy v yX ");
+    }
+
+    #[test]
+    fn test_representable_l_groups() {
+        check_invalid("e <= x v yXY");
+    }
+    
+    #[test]
+    fn test_weakly_abelian() {
+        check_invalid("(x ^ e)(x ^ e) <= Y(x ^ e)y");
+    }
+
+    /* This one may take long
+    #[test]
+    fn test_representable_l_monoids() {
+        check_invalid("xyz ^ rst <= xsz v ryt");
+    }
+    */
+        
+    #[test]
+    fn test_pyvalidity_bug() {
+        check_valid("e <= xY v yZ v zX");
+    }
 }

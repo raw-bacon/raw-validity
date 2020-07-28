@@ -1,5 +1,6 @@
 use truncated::truncated_group::TruncatedGroup;
 use truncated::truncated_subgroup::TruncatedSubgroup;
+use truncated::truncated_group::ElementsExceptIdentity;
 use terms::short_free_group_term::ShortFreeGroupTerm;
 use std::collections::BTreeSet;
 use terms::short_free_group_term::Len;
@@ -39,7 +40,11 @@ fn extends_helper(
     if contains_all_terms_or_inverses(&ambient_group, &subgroup) {
         return true;
     }
-    let minimal = ambient_group.elements.difference(&subgroup.elements).min_by_key(|x| x.len()).unwrap();
+
+    let elements_except_identity = ambient_group.elements_except_identity();
+    let minimal = elements_except_identity.difference(&subgroup.elements)
+                    .min_by_key(|x| x.len())
+                    .unwrap();
 
     for t in &[*minimal, minimal.inverse()] {
         let mut new_elements = subgroup.elements.clone();
@@ -55,7 +60,7 @@ fn extends_helper(
 fn contains_all_terms_or_inverses(
         ambient_group: &TruncatedGroup, 
         subgroup: &TruncatedSubgroup) -> bool {
-    for x in &ambient_group.elements {
+    for x in &ambient_group.elements_except_identity() {
         if !subgroup.elements.contains(x) && !subgroup.elements.contains(&x.inverse()) {
             return false;
         }

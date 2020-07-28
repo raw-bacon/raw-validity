@@ -40,3 +40,15 @@ impl TruncatedGroup {
         }
     }
 }
+
+pub trait ElementsExceptIdentity {
+    fn elements_except_identity(&self) -> BTreeSet<ShortFreeGroupTerm>;
+}
+
+impl ElementsExceptIdentity for TruncatedGroup {
+    fn elements_except_identity(&self) -> BTreeSet<ShortFreeGroupTerm> {
+        let mut all_elements = self.elements.clone();
+        all_elements.remove(&ShortFreeGroupTerm::new(None, None, None));
+        return all_elements;
+    }
+}

@@ -119,8 +119,6 @@ impl CNF {
 }
 
 fn to_cnf(term: LGroupTerm) -> LGroupTerm {
-    println!("{}", term.to_string());
-
     if is_in_cnf(&term) {
         return term;
     }
