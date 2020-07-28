@@ -12,6 +12,7 @@ Upon running raw-validity you are prompted to enter either an equation or an ine
 3. Meets and joins are denoted by `^` and `v`, respectively. This means that the letter `v` can not appear in the name of a variable.
 4. Inverses are denoted by **prefix** `-`. E.g., the inverse of `x v y` is `-(x v y)`.
 5. Whitespace and non-alphanumeric characters except `^`, `-`, `(`, and `)` are ignored. In particular, products do not have a symbol. The product of `x v y` and `z ^ w` is `(x v z)(z ^ w)`.
+6. Equations are two l-group terms, separated by the symbol `=`. Similarly, separating terms with `<=` encodes an inequation.
 
 # Installation
 In the releases section of this repository, download the file named `exec` and save it somewhere. Open a terminal in the directory containing `exec` and run 
