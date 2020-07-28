@@ -76,7 +76,7 @@ fn extends_helper(
         return false; 
     }
     if contains_all_terms_or_inverses(&ambient_group, &subgroup) { 
-        if verbose {
+        if verbose {/*
             let mut elements_string = String::new();
             elements_string.push('{');
             for x in &*subgroup.elements {
@@ -86,7 +86,8 @@ fn extends_helper(
             elements_string.pop();
             elements_string.pop();
             elements_string.push('}');
-            println!("The order this extends to is {}", elements_string)
+            println!("The order this extends to is {}", elements_string)*/
+            println!("This extends to a right order.");
         }
         return true; 
     }
