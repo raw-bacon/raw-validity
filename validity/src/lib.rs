@@ -2,6 +2,7 @@ use terms::formula::LGroupFormula;
 use std::collections::BTreeSet;
 use terms::short_free_group_term::ShortFreeGroupTerm;
 use cnf::three_cnf::ThreeCNF;
+use cnf::normal_cnf::CNF;
 use extend_to_right_order::extend_to_right_order;
 use terms::Term;
 
@@ -12,17 +13,21 @@ pub fn is_valid(eq: LGroupFormula, verbose: bool) -> bool {
     let meetands: BTreeSet<BTreeSet<ShortFreeGroupTerm>>;
     meetands = match eq {
         LGroupFormula::LGroupInequation(lhs, rhs) => {
-            let three_cnf = ThreeCNF::from(rhs * lhs.inverse());
+            let three_cnf = ThreeCNF::from(rhs.clone() * lhs.inverse());
             if verbose {
+                println!("The CNF of the inequality you entered is {}.", CNF::from(rhs.clone() * lhs.inverse()).to_string());
                 println!("The 3-CNF of the inequality you entered is {}.", three_cnf.to_string());
             }
             three_cnf.meetands
         },
         LGroupFormula::LGroupEquation(lhs, rhs) => {
             let three_cnf_one = ThreeCNF::from(rhs.clone() * lhs.inverse());
-            let three_cnf_two = ThreeCNF::from(lhs * rhs.inverse());
+            let three_cnf_two = ThreeCNF::from(lhs.clone() * rhs.inverse());
             
             if verbose {
+                println!("The CNFs of the equality you entered are\n{}\nand\n{}", 
+                         CNF::from(rhs.clone() * lhs.inverse()).to_string(), 
+                         CNF::from(lhs * rhs.inverse()).to_string());
                 println!("The 3-CNFs of the equality you entered are\n{}\nand\n{}.", three_cnf_one.to_string(), three_cnf_two.to_string());
             }
 
