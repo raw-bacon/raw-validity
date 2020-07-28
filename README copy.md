@@ -2,7 +2,7 @@
 ![Rust](https://github.com/raw-bacon/raw-validity/workflows/Rust/badge.svg)
 
 
-# raw-validity
+# rsvalidity
 This is a program checking validity of $l$-group equations and inequations using an [algorithm](https://arxiv.org/abs/1809.02574) developed by George Metcalfe and Almudena Colacito (After Proposition 2 in Version 1).
 
 # Usage
