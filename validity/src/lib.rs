@@ -15,8 +15,8 @@ pub fn is_valid(eq: LGroupFormula, verbose: bool) -> bool {
         LGroupFormula::LGroupInequation(lhs, rhs) => {
             let three_cnf = ThreeCNF::from(rhs.clone() * lhs.inverse());
             if verbose {
-                println!("The CNF of the inequality you entered is {}.", CNF::from(rhs.clone() * lhs.inverse()).to_string());
-                println!("The 3-CNF of the inequality you entered is {}.", three_cnf.to_string());
+                println!("\nThe CNF of the inequality you entered is {}.", CNF::from(rhs.clone() * lhs.inverse()).to_string());
+                println!("\nThe 3-CNF of the inequality you entered is {}.", three_cnf.to_string());
             }
             three_cnf.meetands
         },
@@ -25,10 +25,10 @@ pub fn is_valid(eq: LGroupFormula, verbose: bool) -> bool {
             let three_cnf_two = ThreeCNF::from(lhs.clone() * rhs.inverse());
             
             if verbose {
-                println!("The CNFs of the equality you entered are\n{}\nand\n{}", 
+                println!("\nThe CNFs of the equality you entered are\n{}\nand\n{}", 
                          CNF::from(rhs.clone() * lhs.inverse()).to_string(), 
                          CNF::from(lhs * rhs.inverse()).to_string());
-                println!("The 3-CNFs of the equality you entered are\n{}\nand\n{}.", three_cnf_one.to_string(), three_cnf_two.to_string());
+                println!("\nThe 3-CNFs of the equality you entered are\n{}\nand\n{}.", three_cnf_one.to_string(), three_cnf_two.to_string());
             }
 
             three_cnf_one.meetands.union(&three_cnf_two.meetands).cloned().collect()
@@ -48,7 +48,7 @@ pub fn is_valid(eq: LGroupFormula, verbose: bool) -> bool {
             meetand_string.pop();
             meetand_string.pop();
             meetand_string.push('}');
-            println!("Checking whether {} extends to a right order.", meetand_string);
+            println!("\nChecking whether {} extends to a right order.", meetand_string);
         }
 
         if extend_to_right_order(Box::new(meetand), verbose) {
@@ -134,5 +134,10 @@ mod tests {
     #[test]
     fn test_pyvalidity_bug() {
         check_valid("e <= xY v yZ v zX");
+    }
+
+    #[test]
+    fn test_trivial() {
+        check_valid("e=e");
     }
 }

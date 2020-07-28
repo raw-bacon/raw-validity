@@ -27,8 +27,14 @@ pub (super) fn extend_to_right_order(elements: Box<BTreeSet<ShortFreeGroupTerm>>
         };
     }
 
+    if verbose {
+        println!("Computing the ambient group.");
+    }
     let ambient_group = TruncatedGroup::new(all_literals.clone());
-    let subgroup = TruncatedSubgroup::new(elements, all_literals, false, verbose);
+    if verbose {
+        println!("The ambient group has size {}.", ambient_group.elements.len());
+    }
+    let subgroup = TruncatedSubgroup::new(elements, all_literals, false, true, verbose);
 
     if verbose {
         let mut subgroup_string = String::new();
@@ -43,7 +49,7 @@ pub (super) fn extend_to_right_order(elements: Box<BTreeSet<ShortFreeGroupTerm>>
         println!("The truncated subgroup is {}.", subgroup_string);
     }
     
-    extends_helper(&ambient_group, &subgroup, verbose)
+    extends_helper(&ambient_group, &subgroup, 1, verbose)
 }
 
 fn strong_complement(subgroup: &TruncatedSubgroup, ambient_group: &TruncatedGroup) -> BTreeSet<ShortFreeGroupTerm> {
@@ -62,9 +68,14 @@ fn strong_complement(subgroup: &TruncatedSubgroup, ambient_group: &TruncatedGrou
 fn extends_helper(
         ambient_group: &TruncatedGroup, 
         subgroup: &TruncatedSubgroup,
+        recursion_depth: usize,
         verbose: bool) -> bool {
     
-    if contains_identity(&subgroup) { return false; }
+    
+    if contains_identity(&subgroup) { 
+        if verbose { println!("The subgroup contains the identity.\n"); }
+        return false; 
+    }
     if contains_all_terms_or_inverses(&ambient_group, &subgroup) { 
         if verbose {
             let mut elements_string = String::new();
@@ -85,18 +96,23 @@ fn extends_helper(
     let minimal = complement.iter().min_by_key(|x| x.len()).unwrap();
 
     for t in &[*minimal, minimal.inverse()] {
+        
         if verbose {
-            println!("\nAdding {}.", t.to_string());
+            println!("Currently at recursion depth {}.", recursion_depth);
+            // println!("Adding {}.", t.to_string());
         }
-        let mut new_subgroup = TruncatedSubgroup::new(subgroup.elements.clone(), ambient_group.generators.clone(), true, verbose);
+        let mut new_subgroup = TruncatedSubgroup::new(subgroup.elements.clone(), ambient_group.generators.clone(), true, true, verbose);
         new_subgroup.insert(*t);
+        if verbose {
+            // println!("Got {} new elements.", new_subgroup.elements.len() - subgroup.elements.len());
+        }
 
-        if extends_helper(&ambient_group, &new_subgroup, verbose) {
+        if extends_helper(&ambient_group, &new_subgroup, recursion_depth + 1, verbose) {
             return true;
         }
     }
-    if verbose {
-        println!("This didn't extend.")
+    if verbose { 
+        // println!("This didn't extend.") 
     }
     return false;
 }

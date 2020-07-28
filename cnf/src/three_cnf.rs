@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 use terms::literal::Literal;
-use terms::free_group_term::FreeGroupTerm;
+use terms::free_group_term::{FreeGroupTerm, FREE_GROUP_IDENTITY};
 use terms::short_free_group_term::ShortFreeGroupTerm;
 use terms::l_group_term::LGroupTerm;
 use super::normal_cnf::CNF;
@@ -63,7 +63,14 @@ impl From<LGroupTerm> for ThreeCNF {
         for meetand in normal_cnf.meetands {
             match meetand.len() {
                 0 => panic!("empty meet!"),
-                1 => {},  // this always extends to a partial order, so we leave out long individual atoms (they cannot be split anyway)
+                1 => {
+                    let element = meetand.iter().next().unwrap();
+                    if *element == FREE_GROUP_IDENTITY {
+                        let mut singleton_set = BTreeSet::new();
+                        singleton_set.insert(ShortFreeGroupTerm::new(None, None, None));
+                        new_meetands.insert(singleton_set);
+                    } // otherwise this always extends to a partial order, so we leave out long individual atoms (they cannot be split anyway)
+                },  
                 _ => {
                     let mut joinands = BTreeSet::new();
                     for term in meetand {

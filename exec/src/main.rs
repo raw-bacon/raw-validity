@@ -14,7 +14,7 @@ fn main() -> io::Result<()> {
         false => "invalid"
     };
 
-    println!("{} is {}", formula.to_string(), validity_string);
+    println!("\n{} is {}", formula.to_string(), validity_string);
 
     return Ok(());
 }

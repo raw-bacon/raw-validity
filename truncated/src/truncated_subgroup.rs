@@ -23,7 +23,7 @@ use super::Closable;
 /// gens.insert(Literal::from('x'));
 /// gens.insert(Literal::from('y'));
 /// gens.insert(Literal::from('z'));
-/// let truncated = TruncatedSubgroup::new(Box::new(set), gens, false, false);
+/// let truncated = TruncatedSubgroup::new(Box::new(set), gens, false, false, false);
 /// let mut expected = Box::new(BTreeSet::new());
 /// expected.insert(s);
 /// expected.insert(t);
@@ -42,15 +42,17 @@ pub struct TruncatedSubgroup {
     length_one:              Box<BTreeSet<ShortFreeGroupTerm>>,
     length_two:              Box<BTreeSet<ShortFreeGroupTerm>>,
     length_three:            Box<BTreeSet<ShortFreeGroupTerm>>,
-    verbose:                 bool
+    verbose:                 bool,
+    break_at_identity:       bool
 }
 
 impl TruncatedSubgroup {
     pub fn new(
-        elements: Box<BTreeSet<ShortFreeGroupTerm>>, 
-        gens:     BTreeSet<Literal>,
-        closed:   bool,
-        verbose:  bool
+        elements:          Box<BTreeSet<ShortFreeGroupTerm>>, 
+        gens:              BTreeSet<Literal>,
+        closed:            bool,
+        break_at_identity: bool,
+        verbose:           bool
     ) -> TruncatedSubgroup {
         // close gens under inversion
         let mut gens_of_ambient_group = BTreeSet::new();
@@ -121,6 +123,7 @@ impl TruncatedSubgroup {
             length_one:            length_one,
             length_two:            length_two,
             length_three:          length_three,
+            break_at_identity:     break_at_identity,
             verbose:               verbose
         };
         if !closed { sub.close(); }
@@ -144,12 +147,20 @@ impl Closable for TruncatedSubgroup {
     fn close(&mut self) {
         let mut found_new_element = true;
         let mut new_elements_buffer: BTreeSet<ShortFreeGroupTerm> = self.previously_new.clone();
-        println!("Closing under multiplication.");
+        if self.verbose { 
+            // println!("Closing under multiplication."); 
+        }
         while found_new_element {
-            if self.verbose {
+            /*if self.verbose {
                 println!("Currently {} elements, {} of which are not checked.", 
                          self.elements.len(), 
                          new_elements_buffer.len());
+            }*/
+
+            if self.break_at_identity {
+                if self.elements.contains(&ShortFreeGroupTerm::new(None, None, None)) {
+                    return;
+                }
             }
 
             found_new_element = false;
