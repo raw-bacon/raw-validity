@@ -4,7 +4,7 @@ use truncated::truncated_subgroup::TruncatedSubgroup;
 use truncated::tiny_truncated_group::ElementsExceptIdentity;
 use terms::short_free_group_term::ShortFreeGroupTerm;
 use std::collections::BTreeSet;
-use terms::short_free_group_term::Len;
+// use terms::short_free_group_term::Len;
 use terms::Term;
 use truncated::truncated_subgroup::Insert;
 
@@ -50,10 +50,6 @@ pub (super) fn extend_to_right_order(elements: Box<BTreeSet<ShortFreeGroupTerm>>
         println!("The truncated subgroup is {}.", subgroup_string);
     }
     
-    extends_helper(&ambient_group, &subgroup, 1, verbose)
-}
-
-fn strong_complement(subgroup: &TruncatedSubgroup, ambient_group: &TinyTruncatedGroup) -> BTreeSet<ShortFreeGroupTerm> {
     let mut terms_and_inverses = subgroup.elements.clone();
     for x in &*subgroup.elements {
         terms_and_inverses.insert(x.inverse());
@@ -63,12 +59,14 @@ fn strong_complement(subgroup: &TruncatedSubgroup, ambient_group: &TinyTruncated
     for x in *terms_and_inverses {
         strong_complement.remove(&x);
     }
-    return strong_complement;
+
+    extends_helper(&ambient_group, &subgroup, &mut strong_complement, 1, verbose)
 }
 
 fn extends_helper(
         ambient_group: &TinyTruncatedGroup, 
         subgroup: &TruncatedSubgroup,
+        complement: &mut BTreeSet<ShortFreeGroupTerm>,
         recursion_depth: usize,
         verbose: bool) -> bool {
     
@@ -93,27 +91,56 @@ fn extends_helper(
         return true; 
     }
 
-    let complement = strong_complement(&subgroup, &ambient_group);
-    let minimal = complement.iter().min_by_key(|x| x.len()).unwrap();
-    // let minimal = complement.iter().next().unwrap();
+    // let complement = strong_complement(&subgroup, &ambient_group);
+    // let minimal = complement.iter().min_by_key(|x| x.len()).unwrap();
+    let mut minimal: ShortFreeGroupTerm;
+    
+    let mut complement_iter = complement.iter();
+    minimal = *complement_iter.next().unwrap();
+    minimal = minimal.clone();
+    
 
-    for t in &[*minimal, minimal.inverse()] {
-        
-        if verbose {
-            println!("Currently at recursion depth {}. Adding {}.", recursion_depth, t.to_string());
-        }
-        let mut new_subgroup = TruncatedSubgroup::new(subgroup.elements.clone(), ambient_group.generators.clone(), true, true, verbose);
-        new_subgroup.insert(*t);
-        if verbose {
-            // println!("Got {} new elements.", new_subgroup.elements.len() - subgroup.elements.len());
-        }
+    if verbose {
+        println!("Currently at recursion depth {}. Adding {}.", recursion_depth, minimal.to_string());
+    }
+    let mut new_subgroup = TruncatedSubgroup::new(subgroup.elements.clone(), ambient_group.generators.clone(), true, true, verbose);
+    let newly_added = new_subgroup.insert(minimal);
 
-        if extends_helper(&ambient_group, &new_subgroup, recursion_depth + 1, verbose) {
-            return true;
-        }
+    for t in &newly_added {
+        complement.remove(&t);
+        complement.remove(&t.inverse());
+    }
+
+    if extends_helper(&ambient_group, &new_subgroup, complement, recursion_depth + 1, verbose) {
+        return true;
     }
     if verbose { 
-        // println!("This didn't extend.") 
+        println!("This didn't extend. Trying {}", minimal.inverse().to_string()) 
+    }
+
+    for t in &newly_added {
+        complement.insert(*t);
+        complement.insert(t.inverse());
+    }
+
+    let mut new_subgroup = TruncatedSubgroup::new(subgroup.elements.clone(), ambient_group.generators.clone(), true, true, verbose);
+    let newly_added = new_subgroup.insert(minimal.inverse());
+
+    for t in &newly_added {
+        complement.remove(&t);
+        complement.remove(&t.inverse());
+    }
+
+    if extends_helper(&ambient_group, &new_subgroup, complement, recursion_depth + 1, verbose) {
+        return true;
+    }
+    if verbose { 
+        println!("This didn't extend either.") 
+    }
+
+    for t in &newly_added {
+        complement.insert(*t);
+        complement.insert(t.inverse());
     }
     return false;
 }

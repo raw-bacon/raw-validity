@@ -2,7 +2,6 @@ use std::collections::{BTreeSet, BTreeMap};
 use terms::short_free_group_term::*;
 use terms::literal::Literal;
 use terms::Term;
-use super::Closable;
 
 /// Represents the closed ball of radius 3 around e in the Cayley
 /// graph of a free group with respect to the standard free generating set.
@@ -132,24 +131,30 @@ impl TruncatedSubgroup {
 }
 
 pub trait Insert {
-    fn insert(&mut self, element: ShortFreeGroupTerm);
+    /// Inserts `element` and returns what was newly added.
+    fn insert(&mut self, element: ShortFreeGroupTerm) -> BTreeSet<ShortFreeGroupTerm>;
 }
 
 impl Insert for TruncatedSubgroup {
-    fn insert(&mut self, element: ShortFreeGroupTerm) {
+    fn insert(&mut self, element: ShortFreeGroupTerm) -> BTreeSet<ShortFreeGroupTerm> {
         self.elements.insert(element);
         self.previously_new.insert(element);
-        self.close();
+        return self.close();
     }
 }
 
+trait Closable {
+    fn close(&mut self) -> BTreeSet<ShortFreeGroupTerm>;
+}
+
 impl Closable for TruncatedSubgroup {
-    fn close(&mut self) {
+    fn close(&mut self) -> BTreeSet<ShortFreeGroupTerm> {
+        let mut output = BTreeSet::new();
         let mut found_new_element = true;
         let mut new_elements_buffer: BTreeSet<ShortFreeGroupTerm> = self.previously_new.clone();
-        if self.verbose { 
-            // println!("Closing under multiplication."); 
-        }
+        /*if self.verbose { 
+            println!("\nClosing under multiplication."); 
+        }*/
         while found_new_element {
             /*if self.verbose {
                 println!("Currently {} elements, {} of which are not checked.", 
@@ -159,13 +164,14 @@ impl Closable for TruncatedSubgroup {
 
             if self.break_at_identity {
                 if self.elements.contains(&ShortFreeGroupTerm::new(None, None, None)) {
-                    return;
+                    return output;
                 }
             }
 
             found_new_element = false;
             for y in &new_elements_buffer {
                 self.elements.insert(y.clone());
+                output.insert(y.clone());
                 match (y.left, y.mid, y.right) {
                     (Some(a), None, None) => {
                         self.length_one.insert(*y);
@@ -335,5 +341,6 @@ impl Closable for TruncatedSubgroup {
                 };
             }
         }
+        return output;
     }
 }

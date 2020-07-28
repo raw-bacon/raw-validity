@@ -118,10 +118,10 @@ fn split(term: FreeGroupTerm, counter: &mut usize) -> BTreeSet<ShortFreeGroupTer
     });
 
     let mut rest_literals = Vec::new();
-    rest_literals.push(Literal::new('v', *counter + term.literals.len() - 4, true));
+    rest_literals.push(Literal::new('v', *counter, true));
+    *counter += 1;
     for x in &term.literals[2 .. term.literals.len()] {
         rest_literals.push(*x);
-        *counter += 1;
     }
     let rest_term = FreeGroupTerm { literals: rest_literals };
     for x in split(rest_term, counter) {

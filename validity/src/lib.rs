@@ -119,7 +119,6 @@ mod tests {
         check_invalid("e <= x v yXY");
     }
     
-    /*
     #[test]
     fn test_weakly_abelian() {
         check_invalid("(x ^ e)(x ^ e) <= Y(x ^ e)y");
@@ -129,7 +128,6 @@ mod tests {
     fn test_representable_l_monoids() {
         check_invalid("xyz ^ rst <= xsz v ryt");
     }
-    */
         
     #[test]
     fn test_pyvalidity_bug() {
