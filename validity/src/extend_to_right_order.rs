@@ -27,7 +27,6 @@ pub (super) fn extend_to_right_order(elements: Box<BTreeSet<ShortFreeGroupTerm>>
         };
     }
 
-
     let ambient_group = TruncatedGroup::new(all_literals.clone());
     let subgroup = TruncatedSubgroup::new(elements, all_literals, false, verbose);
 
@@ -44,6 +43,10 @@ pub (super) fn extend_to_right_order(elements: Box<BTreeSet<ShortFreeGroupTerm>>
         println!("The truncated subgroup is {}.", subgroup_string);
     }
     
+    extends_helper(&ambient_group, &subgroup, verbose)
+}
+
+fn strong_complement(subgroup: &TruncatedSubgroup, ambient_group: &TruncatedGroup) -> BTreeSet<ShortFreeGroupTerm> {
     let mut terms_and_inverses = subgroup.elements.clone();
     for x in &*subgroup.elements {
         terms_and_inverses.insert(x.inverse());
@@ -53,31 +56,42 @@ pub (super) fn extend_to_right_order(elements: Box<BTreeSet<ShortFreeGroupTerm>>
     for x in *terms_and_inverses {
         strong_complement.remove(&x);
     }
-    
-    return extends_helper(&ambient_group, &subgroup, &strong_complement, verbose);
+    return strong_complement;
 }
 
 fn extends_helper(
         ambient_group: &TruncatedGroup, 
         subgroup: &TruncatedSubgroup,
-        strong_complement: &BTreeSet<ShortFreeGroupTerm>,
         verbose: bool) -> bool {
     
     if contains_identity(&subgroup) { return false; }
-    if contains_all_terms_or_inverses(&ambient_group, &subgroup) { return true; }
+    if contains_all_terms_or_inverses(&ambient_group, &subgroup) { 
+        if verbose {
+            let mut elements_string = String::new();
+            elements_string.push('{');
+            for x in &*subgroup.elements {
+                elements_string.push_str(x.to_string().as_str());
+                elements_string.push_str(", ");
+            }
+            elements_string.pop();
+            elements_string.pop();
+            elements_string.push('}');
+            println!("The order this extends to is {}", elements_string)
+        }
+        return true; 
+    }
 
-    let minimal = &strong_complement.iter().min_by_key(|x| x.len()).unwrap();
-    let mut new_complement = strong_complement.clone();
-    new_complement.remove(*minimal);
-    new_complement.remove(&minimal.inverse());
+    let complement = strong_complement(&subgroup, &ambient_group);
+    let minimal = complement.iter().min_by_key(|x| x.len()).unwrap();
 
-    for t in &[**minimal, minimal.inverse()] {
+    for t in &[*minimal, minimal.inverse()] {
         if verbose {
             println!("\nAdding {}.", t.to_string());
         }
         let mut new_subgroup = TruncatedSubgroup::new(subgroup.elements.clone(), ambient_group.generators.clone(), true, verbose);
         new_subgroup.insert(*t);
-        if extends_helper(&ambient_group, &new_subgroup, &new_complement, verbose) {
+
+        if extends_helper(&ambient_group, &new_subgroup, verbose) {
             return true;
         }
     }
