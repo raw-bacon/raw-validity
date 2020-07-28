@@ -1,5 +1,5 @@
 
-![Rust](https://github.com/raw-bacon/rawvalidity/workflows/Rust/badge.svg)
+![Rust](https://github.com/raw-bacon/raw-validity/workflows/Rust/badge.svg)
 
 
 # raw-validity
