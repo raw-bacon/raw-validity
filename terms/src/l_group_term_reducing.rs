@@ -96,6 +96,11 @@ pub (super) fn prod_reduced(xs: Vec<LGroupTerm>) -> Result<LGroupTerm, String> {
     let mut new_factors = xs;
     let mut old_factors: Vec<LGroupTerm>;
     let mut not_done = contains_prods(&new_factors);
+
+    if (&new_factors).len() == 0 {
+        return Ok(IDENTITY);
+    }
+
     while not_done {
         old_factors = new_factors.clone();
         new_factors = Vec::new();
@@ -193,5 +198,8 @@ mod tests {
     fn test_prod_reduced() {
         let result = LGroupTerm::Prod(vec![LGroupTerm::from(Literal::from('x')), LGroupTerm::from(Literal::from('y'))]);
         assert_eq!(LGroupTerm::Atom(FreeGroupTerm::new(vec![Literal::from('x'), Literal::from('y')])), result.reduced());
+
+        let result = LGroupTerm::Prod(vec![]);
+        assert_eq!(LGroupTerm::Atom(FreeGroupTerm::new(vec![])), result.reduced());
     }
 }

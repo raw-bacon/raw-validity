@@ -3,6 +3,15 @@ use terms::l_group_term::LGroupTerm;
 use terms::Reducable;
 use std::collections::BTreeSet;
 
+/// Represents a meet of joins of free group terms.
+/// 
+/// Can be constructed from LGroupTerms as follows.
+/// ```
+/// use terms::l_group_term::LGroupTerm;
+/// use cnf::normal_cnf::CNF;
+/// let l_group_term = LGroupTerm::from("((x^y)v(x^z))(-(x^(yvz)))");
+/// println!("The CNF of {} is {}", l_group_term.to_string(), CNF::from(l_group_term).to_string());
+/// ```
 pub struct CNF {
     pub meetands: BTreeSet<BTreeSet<FreeGroupTerm>>
 }
@@ -110,6 +119,8 @@ impl CNF {
 }
 
 fn to_cnf(term: LGroupTerm) -> LGroupTerm {
+    println!("{}", term.to_string());
+
     if is_in_cnf(&term) {
         return term;
     }
@@ -172,7 +183,7 @@ fn to_cnf(term: LGroupTerm) -> LGroupTerm {
                         let mut new_meetands = BTreeSet::new();
                         for meetand in meetands {
                             let vec = vec![LGroupTerm::Prod(rest_left.clone()), meetand.clone(), LGroupTerm::Prod(rest_right.clone())];
-                            new_meetands.insert(to_cnf(LGroupTerm::Prod(vec)));
+                            new_meetands.insert(to_cnf(LGroupTerm::Prod(vec).reduced()));
                         }
                         return to_cnf(LGroupTerm::Meet(new_meetands));
                     },
@@ -194,7 +205,7 @@ fn to_cnf(term: LGroupTerm) -> LGroupTerm {
                         let mut new_joinands = BTreeSet::new();
                         for joinand in joinands {
                             let vec = vec![LGroupTerm::Prod(rest_left.clone()), joinand.clone(), LGroupTerm::Prod(rest_right.clone())];
-                            new_joinands.insert(to_cnf(LGroupTerm::Prod(vec)));
+                            new_joinands.insert(to_cnf(LGroupTerm::Prod(vec).reduced()));
                         }
                         return to_cnf(LGroupTerm::Join(new_joinands));
                     },

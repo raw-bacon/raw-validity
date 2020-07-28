@@ -63,7 +63,7 @@ impl FreeGroupTerm {
     }
 }
 
-pub static IDENTITY: FreeGroupTerm = FreeGroupTerm { literals: Vec::new() };
+pub const FREE_GROUP_IDENTITY: FreeGroupTerm = FreeGroupTerm { literals: vec![] };
 
 impl From<Literal> for FreeGroupTerm {
     fn from(x: Literal) -> FreeGroupTerm {
@@ -226,7 +226,7 @@ mod tests {
     fn test_mul() {
         let x = FreeGroupTerm::new(vec![Literal::from('x')]);
         let x_inv = FreeGroupTerm::new(vec![Literal::from('x').inverse()]);
-        assert_eq!(IDENTITY, x*x_inv);
+        assert_eq!(FREE_GROUP_IDENTITY, x*x_inv);
     }
 
     #[test]

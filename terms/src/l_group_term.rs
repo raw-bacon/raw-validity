@@ -54,6 +54,8 @@ pub enum LGroupTerm {
     Prod(Vec<LGroupTerm>)
 }
 
+pub const IDENTITY: LGroupTerm = LGroupTerm::Atom(FreeGroupTerm { literals: vec![] } );
+
 impl From<FreeGroupTerm> for LGroupTerm {
     fn from(x: FreeGroupTerm) -> LGroupTerm {
         LGroupTerm::Atom(x).reduced()
@@ -184,6 +186,10 @@ impl ToString for LGroupTerm {
                 delimiter = '*';
                 for x in xs { elements.push(x); }
             }
+        }
+
+        if elements.len() == 0 {
+            return format!("Empty '{}'", delimiter);
         }
 
         let mut string = format!("{}", elements[0].to_string());
