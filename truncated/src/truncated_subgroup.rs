@@ -120,6 +120,22 @@ impl Closable for TruncatedSubgroup {
         let mut found_new_element = true;
         let mut new_elements_buffer: BTreeSet<ShortFreeGroupTerm> = BTreeSet::new();
         while found_new_element {
+            /* debug
+            let mut debug_string = String::new();
+            debug_string.push_str("Start with: ");
+            for debug_element in &self.elements {
+                debug_string.push_str(debug_element.to_string().as_str());
+                debug_string.push(',');
+            }
+            debug_string.pop();
+            debug_string.push_str("\nNewly found: ");
+            for debug_element in &new_elements_buffer {
+                debug_string.push_str(debug_element.to_string().as_str());
+                debug_string.push(',');
+            }
+            println!("{}\n\n", debug_string);
+            end debug */
+            
             found_new_element = false;
             for y in new_elements_buffer {
                 self.elements.insert(y.clone());

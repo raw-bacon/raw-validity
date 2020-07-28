@@ -37,9 +37,8 @@ fn extends_helper(
         ambient_group: &TruncatedGroup, 
         subgroup: &TruncatedSubgroup) -> bool {
     
-    if contains_all_terms_or_inverses(&ambient_group, &subgroup) {
-        return true;
-    }
+    if contains_identity(&subgroup) { return false; }
+    if contains_all_terms_or_inverses(&ambient_group, &subgroup) { return true; }
 
     let elements_except_identity = ambient_group.elements_except_identity();
     let minimal = elements_except_identity.difference(&subgroup.elements)
@@ -66,4 +65,8 @@ fn contains_all_terms_or_inverses(
         }
     }
     return true;
+}
+
+fn contains_identity(subgroup: &TruncatedSubgroup) -> bool {
+    return subgroup.elements.contains(&ShortFreeGroupTerm::new(None, None, None));
 }
