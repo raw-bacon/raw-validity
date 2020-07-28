@@ -94,7 +94,7 @@ impl TruncatedSubgroup {
                     starts_with_pair.get_mut(&(a, b)).unwrap().insert(*y);
                     ends_with_pair.get_mut(&(b, c)).unwrap().insert(*y);
                 }
-                _ => panic!("Invalid ShortFreeGroupTerm")
+                _ => {} // is identity
             };
         }
 
