@@ -9,6 +9,7 @@ pub (super) fn parse(s: &str) -> Result<LGroupTerm, ParsingError> {
     let mut string = s.to_string();
     // remove whitespace and outer brackets
     string.retain(|c| !c.is_whitespace());
+    string.retain(|c| c.is_alphanumeric() || c == '(' || c == ')' || c == '^' || c == '-');
     loop {
         let result = has_outermost_brackets(&string);
         match result {
