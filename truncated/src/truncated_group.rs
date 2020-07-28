@@ -23,7 +23,7 @@ use terms::Term;
 #[derive(Debug)]
 pub struct TruncatedGroup {
     pub generators: BTreeSet<Literal>,
-    pub elements:   BTreeSet<ShortFreeGroupTerm>
+    pub elements:   Box<BTreeSet<ShortFreeGroupTerm>>
 }
 
 
@@ -37,7 +37,7 @@ impl TruncatedGroup {
         let sub = TruncatedSubgroup::new(Box::new(sub_elements), generators.clone());
         TruncatedGroup {
             generators: generators,
-            elements:   *sub.elements
+            elements:   sub.elements
         }
     }
 }
@@ -50,6 +50,6 @@ impl ElementsExceptIdentity for TruncatedGroup {
     fn elements_except_identity(&self) -> BTreeSet<ShortFreeGroupTerm> {
         let mut all_elements = self.elements.clone();
         all_elements.remove(&ShortFreeGroupTerm::new(None, None, None));
-        return all_elements;
+        return *all_elements;
     }
 }

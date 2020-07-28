@@ -78,6 +78,7 @@ mod tests {
         check_invalid("xy = yx");
     }
 
+    /*
     #[test]
     fn test_colacito_example_1point3point7() {
         check_invalid("e <= xx v xy v yX ");
@@ -97,6 +98,7 @@ mod tests {
     fn test_representable_l_monoids() {
         check_invalid("xyz ^ rst <= xsz v ryt");
     }
+    */
         
     #[test]
     fn test_pyvalidity_bug() {
