@@ -34,7 +34,7 @@ impl TruncatedGroup {
             sub_elements.insert(ShortFreeGroupTerm::from(*x));
             sub_elements.insert(ShortFreeGroupTerm::from(x.inverse()));
         }
-        let sub = TruncatedSubgroup::new(Box::new(sub_elements), generators.clone());
+        let sub = TruncatedSubgroup::new(Box::new(sub_elements), generators.clone(), false, false);
         TruncatedGroup {
             generators: generators,
             elements:   sub.elements

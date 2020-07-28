@@ -46,7 +46,7 @@ pub fn is_valid(eq: LGroupFormula, verbose: bool) -> bool {
             println!("Checking whether {} extends to a right order.", meetand_string);
         }
 
-        if extend_to_right_order(Box::new(meetand)) {
+        if extend_to_right_order(Box::new(meetand), verbose) {
             return false;
         }
     }
@@ -104,7 +104,6 @@ mod tests {
         check_invalid("xy = yx");
     }
 
-    /*
     #[test]
     fn test_colacito_example_1point3point7() {
         check_invalid("e <= xx v xy v yX ");
@@ -115,6 +114,7 @@ mod tests {
         check_invalid("e <= x v yXY");
     }
     
+    /*
     #[test]
     fn test_weakly_abelian() {
         check_invalid("(x ^ e)(x ^ e) <= Y(x ^ e)y");
