@@ -20,11 +20,11 @@ pub fn is_valid(eq: LGroupFormula) -> bool {
         return false;
     }
     for meetand in meetands {
-        if !extend_to_right_order(meetand) {
-            return true;
+        if extend_to_right_order(meetand) {
+            return false;
         }
     }
-    return false;
+    return true;
 }
 
 #[cfg(test)]
@@ -38,7 +38,7 @@ mod tests {
     fn check_invalid(string: &str) {
         assert_eq!(false, is_valid(LGroupFormula::from(string)));
     }
-
+    
     #[test]
     fn test_distributive() {
         check_valid( "x ^ (y v z) = (x ^ y) v (x ^ z) ");
@@ -93,12 +93,10 @@ mod tests {
         check_invalid("(x ^ e)(x ^ e) <= Y(x ^ e)y");
     }
 
-    /* This one may take long
     #[test]
     fn test_representable_l_monoids() {
         check_invalid("xyz ^ rst <= xsz v ryt");
     }
-    */
         
     #[test]
     fn test_pyvalidity_bug() {

@@ -59,8 +59,8 @@ impl From<LGroupTerm> for ThreeCNF {
     fn from(term: LGroupTerm) -> ThreeCNF {
         let normal_cnf = CNF::from(term);
         let mut new_meetands = BTreeSet::new();
+        let mut count = 1;
         for meetand in normal_cnf.meetands {
-            let mut count = 1;
             match meetand.len() {
                 0 => panic!("empty meet!"),
                 1 => {},  // this always extends to a partial order, so we leave out long individual atoms (they cannot be split anyway)
@@ -114,6 +114,7 @@ fn split(term: FreeGroupTerm, counter: &mut usize) -> BTreeSet<ShortFreeGroupTer
     rest_literals.push(Literal::new('v', *counter + term.literals.len() - 4, true));
     for x in &term.literals[2 .. term.literals.len()] {
         rest_literals.push(*x);
+        *counter += 1;
     }
     let rest_term = FreeGroupTerm { literals: rest_literals };
     for x in split(rest_term, counter) {
