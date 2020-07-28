@@ -232,10 +232,12 @@ impl Closable for TruncatedSubgroup {
                         }
                     },
                     3 => {
-                        // if y has length 1, then x * y is of length <= 3 if y.left == x.right.inverse(),
-                        // and                     y * x is of length <= 3 if y.left == x.left.inverse().
-                        // if y has length 2 or 3, then x * y is of length <= 3 if y starts with (x.right.inverse(), x.mid.inverse())
-                        // and                          y * x is of length <= 3 if y ends with (x.mid.inverse(), x.left.inverse())
+                        // if y has length 1 or 2, then x * y is of length <= 3 if y.left == x.right.inverse(),
+                        // and                     y * x is of length <= 3 if y.(left/mid) == x.left.inverse().
+                        // if y has length 3, then x * y is of length <= 3 if y.left == x.right.inverse() && y.mid == x.mid.inverse(),
+                        //                                  i.e., y starts with (x.right.inverse(), x.mid.inverse())
+                        // and                     y * x is of length <= 3 if y.right == x.left.inverse() && y.mid == x.mid.inverse(),
+                        //                                  i.e., y ends with (x.mid.inverse(), x.left.inverse())
                         for y in &self.length_one {
                             if y.left.unwrap() == x.right.unwrap().inverse() {
                                 let maybe_new = *x * *y;
@@ -245,6 +247,22 @@ impl Closable for TruncatedSubgroup {
                                 }
                             }
                             if y.left.unwrap() == x.left.unwrap().inverse() {
+                                let maybe_new = *y * *x;
+                                if !self.elements.contains(&maybe_new) {
+                                    found_new_element = true;
+                                    new_elements_buffer.insert(maybe_new);
+                                }
+                            }
+                        }
+                        for y in &self.length_two {
+                            if y.left.unwrap() == x.right.unwrap().inverse() {
+                                let maybe_new = *x * *y;
+                                if !self.elements.contains(&maybe_new) {
+                                    found_new_element = true;
+                                    new_elements_buffer.insert(maybe_new);
+                                }
+                            }
+                            if y.mid.unwrap() == x.left.unwrap().inverse() {
                                 let maybe_new = *y * *x;
                                 if !self.elements.contains(&maybe_new) {
                                     found_new_element = true;
