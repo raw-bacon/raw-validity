@@ -20,7 +20,7 @@ pub fn is_valid(eq: LGroupFormula) -> bool {
         return false;
     }
     for meetand in meetands {
-        if extend_to_right_order(meetand) {
+        if extend_to_right_order(Box::new(meetand)) {
             return false;
         }
     }
@@ -38,7 +38,7 @@ mod tests {
     fn check_invalid(string: &str) {
         assert_eq!(false, is_valid(LGroupFormula::from(string)));
     }
-    
+
     #[test]
     fn test_distributive() {
         check_valid( "x ^ (y v z) = (x ^ y) v (x ^ z) ");

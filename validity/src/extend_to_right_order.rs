@@ -7,9 +7,9 @@ use terms::short_free_group_term::Len;
 use terms::Term;
 
 
-pub (super) fn extend_to_right_order(elements: BTreeSet<ShortFreeGroupTerm>) -> bool {
+pub (super) fn extend_to_right_order(elements: Box<BTreeSet<ShortFreeGroupTerm>>) -> bool {
     let mut all_literals = BTreeSet::new();
-    for x in &elements {
+    for x in &*elements {
         match (x.left, x.mid, x.right) {
             (None, None, None) => { return false; }
             (Some(a), None, None) => { all_literals.insert(a); }

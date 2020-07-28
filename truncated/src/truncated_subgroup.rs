@@ -32,20 +32,20 @@ use super::Closable;
 /// ```
 #[derive(Debug)]
 pub struct TruncatedSubgroup {
-    pub elements:                BTreeSet<ShortFreeGroupTerm>,
+    pub elements:                Box<BTreeSet<ShortFreeGroupTerm>>,
     // pub gens_of_ambient_group:   BTreeSet<Literal>,
-    pub starts_with_single:      BTreeMap<Literal, BTreeSet<ShortFreeGroupTerm>>,
-    pub ends_with_single:        BTreeMap<Literal, BTreeSet<ShortFreeGroupTerm>>,
-    pub starts_with_pair:        BTreeMap<(Literal, Literal), BTreeSet<ShortFreeGroupTerm>>,
-    pub ends_with_pair:          BTreeMap<(Literal, Literal), BTreeSet<ShortFreeGroupTerm>>,
-    pub length_one:              BTreeSet<ShortFreeGroupTerm>,
-    pub length_two:              BTreeSet<ShortFreeGroupTerm>,
-    pub length_three:            BTreeSet<ShortFreeGroupTerm>
+    pub starts_with_single:      Box<BTreeMap<Literal, BTreeSet<ShortFreeGroupTerm>>>,
+    pub ends_with_single:        Box<BTreeMap<Literal, BTreeSet<ShortFreeGroupTerm>>>,
+    pub starts_with_pair:        Box<BTreeMap<(Literal, Literal), BTreeSet<ShortFreeGroupTerm>>>,
+    pub ends_with_pair:          Box<BTreeMap<(Literal, Literal), BTreeSet<ShortFreeGroupTerm>>>,
+    pub length_one:              Box<BTreeSet<ShortFreeGroupTerm>>,
+    pub length_two:              Box<BTreeSet<ShortFreeGroupTerm>>,
+    pub length_three:            Box<BTreeSet<ShortFreeGroupTerm>>
 }
 
 impl TruncatedSubgroup {
     pub fn new(
-        elements: BTreeSet<ShortFreeGroupTerm>, 
+        elements: Box<BTreeSet<ShortFreeGroupTerm>>, 
         gens:     BTreeSet<Literal>
     ) -> TruncatedSubgroup {
         // close gens under inversion
@@ -56,14 +56,14 @@ impl TruncatedSubgroup {
         }
 
         // initialize categories
-        let mut length_one   = BTreeSet::new();
-        let mut length_two   = BTreeSet::new();
-        let mut length_three = BTreeSet::new();
+        let mut length_one   = Box::new(BTreeSet::new());
+        let mut length_two   = Box::new(BTreeSet::new());
+        let mut length_three = Box::new(BTreeSet::new());
 
-        let mut starts_with_single = BTreeMap::new();
-        let mut starts_with_pair   = BTreeMap::new();
-        let mut ends_with_single   = BTreeMap::new();
-        let mut ends_with_pair     = BTreeMap::new();
+        let mut starts_with_single = Box::new(BTreeMap::new());
+        let mut starts_with_pair   = Box::new(BTreeMap::new());
+        let mut ends_with_single   = Box::new(BTreeMap::new());
+        let mut ends_with_pair     = Box::new(BTreeMap::new());
 
         for g in &gens_of_ambient_group {
             starts_with_single.insert(*g, BTreeSet::new());
@@ -74,7 +74,7 @@ impl TruncatedSubgroup {
             }
         }
 
-        for y in &elements {
+        for y in &*elements {
             match (y.left, y.mid, y.right) {
                 (Some(a), None, None) => {
                     length_one.insert(*y);
@@ -163,7 +163,7 @@ impl Closable for TruncatedSubgroup {
                 };
             }
             new_elements_buffer = BTreeSet::new();
-            for x in &self.elements {
+            for x in &*self.elements {
                 match x.len() {
                     0 => {},
                     1 => {
@@ -171,7 +171,7 @@ impl Closable for TruncatedSubgroup {
                         // than 2 or there is cancellation, i.e., y begins
                         // with x^-1. Same for y * x, except then y ends
                         // with x^-1.
-                        for y in &self.length_one {
+                        for y in &*self.length_one {
                             let maybe_new = *x * *y;
                             if !self.elements.contains(&maybe_new) {
                                 found_new_element = true;
@@ -183,7 +183,7 @@ impl Closable for TruncatedSubgroup {
                                 new_elements_buffer.insert(maybe_new);
                             }
                         }
-                        for y in &self.length_two {
+                        for y in &*self.length_two {
                             let maybe_new = *x * *y;
                             if !self.elements.contains(&maybe_new) {
                                 found_new_element = true;
@@ -218,7 +218,7 @@ impl Closable for TruncatedSubgroup {
                         // if y has length 2 or 3, then 
                         //      x * y has length <= 3 if y starts with x.mid.inverse()
                         //      y * x has length <= 3 if y ends with x.left.inverse()
-                        for y in &self.length_one {
+                        for y in &*self.length_one {
                             let maybe_new = *x * *y;
                             if !self.elements.contains(&maybe_new) {
                                 found_new_element = true;
@@ -254,7 +254,7 @@ impl Closable for TruncatedSubgroup {
                         //                                  i.e., y starts with (x.right.inverse(), x.mid.inverse())
                         // and                     y * x is of length <= 3 if y.right == x.left.inverse() && y.mid == x.mid.inverse(),
                         //                                  i.e., y ends with (x.mid.inverse(), x.left.inverse())
-                        for y in &self.length_one {
+                        for y in &*self.length_one {
                             if y.left.unwrap() == x.right.unwrap().inverse() {
                                 let maybe_new = *x * *y;
                                 if !self.elements.contains(&maybe_new) {
@@ -270,7 +270,7 @@ impl Closable for TruncatedSubgroup {
                                 }
                             }
                         }
-                        for y in &self.length_two {
+                        for y in &*self.length_two {
                             if y.left.unwrap() == x.right.unwrap().inverse() {
                                 let maybe_new = *x * *y;
                                 if !self.elements.contains(&maybe_new) {
