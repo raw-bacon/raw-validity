@@ -1,13 +1,13 @@
 [workspace]
-
 members = [
     "terms",
     "cnf",
     "exec",
     "truncated",
-    "validity",
-    "docs"
+    "validity"
 ]
 
 [profile.release]
 lto = true
+opt-level = "s"
+
