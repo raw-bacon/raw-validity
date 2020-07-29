@@ -5,7 +5,9 @@
 </head>
 
 <body>
-
+    <input type="text" placeholder="Enter an l-group (in)equation ..." id="text_box">
+    <button type="submit">Check
+    <!-- Note the usage of `type=module` here as this is an ES6 module -->
     <script type="module">
         // Use ES module import syntax to import functionality from the module
         // that we have compiled.
@@ -18,7 +20,7 @@
 
 
 
-        function run() {
+        async function run() {
             // First up we need to actually load the wasm file, so we use the
             // default export to inform it where the wasm file is located on the
             // server, and then we wait on the returned promise to wait for the
@@ -46,7 +48,7 @@
             // exports which is the same as importing the `*_bg` module in other
             // modes
             
-            // await init();
+            await init();
 
             // And afterwards we can use all the functionality defined in wasm.
             //const result = add(1, 2);
@@ -55,19 +57,25 @@
             //    throw new Error("wasm addition doesn't work!");
 
 
+            
+            document.getElementById("submit").addEventListener("click", isValid, false);
+        }
+    </script>
+    
+    <script>
+        function isValid() {
             var inputVal = document.getElementById("text_box").value;
             const result = is_valid(inputVal);
             alert(result);
         }
     </script>
 
+    run();
 
-    <input type="text" placeholder="Enter an l-group (in)equation ..." id="text_box">
-    <button type="submit" onclick="run();">Check
+    
     
 
 
-    <!-- Note the usage of `type=module` here as this is an ES6 module -->
     
 </body>
 
