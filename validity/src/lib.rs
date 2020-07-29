@@ -1,10 +1,10 @@
-use terms::formula::LGroupFormula;
+use l_group_formulas::formula::LGroupFormula;
 use std::collections::BTreeSet;
-use terms::short_free_group_term::ShortFreeGroupTerm;
+use l_group_formulas::short_free_group_term::ShortFreeGroupTerm;
 use cnf::three_cnf::ThreeCNF;
 use cnf::normal_cnf::CNF;
 use extend_to_right_order::extend_to_right_order;
-use terms::Term;
+use l_group_formulas::Term;
 
 mod extend_to_right_order;
 

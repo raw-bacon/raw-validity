@@ -1,9 +1,9 @@
 [workspace]
 members = [
-    "terms",
+    "l_group_formulas",
     "cnf",
     "exec",
-    "truncated",
+    "truncated_free_groups",
     "validity"
 ]
 

@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
-use terms::literal::Literal;
-use terms::short_free_group_term::ShortFreeGroupTerm;
-use terms::Term;
+use l_group_formulas::literal::Literal;
+use l_group_formulas::short_free_group_term::ShortFreeGroupTerm;
+use l_group_formulas::Term;
 
 
 #[derive(Debug)]

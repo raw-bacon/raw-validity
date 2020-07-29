@@ -1,7 +1,7 @@
 use std::collections::{BTreeSet, BTreeMap};
-use terms::short_free_group_term::*;
-use terms::literal::Literal;
-use terms::Term;
+use l_group_formulas::short_free_group_term::*;
+use l_group_formulas::literal::Literal;
+use l_group_formulas::Term;
 
 /// Represents the closed ball of radius 3 around e in the Cayley
 /// graph of a free group with respect to the standard free generating set.
@@ -9,9 +9,9 @@ use terms::Term;
 /// # Examples
 /// Basic usage:
 /// ```
-/// use truncated::truncated_subgroup::TruncatedSubgroup;
-/// use terms::short_free_group_term::ShortFreeGroupTerm;
-/// use terms::literal::Literal;
+/// use truncated_free_groups::truncated_subgroup::TruncatedSubgroup;
+/// use l_group_formulas::short_free_group_term::ShortFreeGroupTerm;
+/// use l_group_formulas::literal::Literal;
 /// use std::collections::BTreeSet;
 /// let s = ShortFreeGroupTerm::from("xY");
 /// let t = ShortFreeGroupTerm::from("yz");

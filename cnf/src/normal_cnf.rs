@@ -1,13 +1,13 @@
-use terms::free_group_term::FreeGroupTerm;
-use terms::l_group_term::LGroupTerm;
-use terms::Reducable;
+use l_group_formulas::free_group_term::FreeGroupTerm;
+use l_group_formulas::l_group_term::LGroupTerm;
+use l_group_formulas::Reducable;
 use std::collections::BTreeSet;
 
 /// Represents a meet of joins of free group terms.
 /// 
 /// Can be constructed from LGroupTerms as follows.
 /// ```
-/// use terms::l_group_term::LGroupTerm;
+/// use l_group_formulas::l_group_term::LGroupTerm;
 /// use cnf::normal_cnf::CNF;
 /// let l_group_term = LGroupTerm::from("((x^y)v(x^z))(-(x^(yvz)))");
 /// println!("The CNF of {} is {}", l_group_term.to_string(), CNF::from(l_group_term).to_string());
@@ -90,8 +90,8 @@ impl CNF {
     /// # Examples
     /// Basic usage:
     /// ```
-    /// use terms::literal::Literal;
-    /// use terms::free_group_term::FreeGroupTerm;
+    /// use l_group_formulas::literal::Literal;
+    /// use l_group_formulas::free_group_term::FreeGroupTerm;
     /// use std::collections::BTreeSet;
     /// use cnf::normal_cnf::CNF;
     /// let mut meetands = BTreeSet::new();
@@ -249,7 +249,7 @@ fn is_in_cnf(term: &LGroupTerm) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use terms::literal::Literal;
+    use l_group_formulas::literal::Literal;
 
     #[test]
     fn test_to_string() {

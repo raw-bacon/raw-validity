@@ -10,23 +10,23 @@ mod parse_free_group_term;
 /// # Examples
 /// To use this, import
 /// ```
-/// use terms::free_group_term::*;
-/// use terms::literal::*;
-/// use terms::*;
+/// use l_group_formulas::free_group_term::*;
+/// use l_group_formulas::literal::*;
+/// use l_group_formulas::*;
 /// ```
 /// Constructing a free group term goes like this.
 /// ```
-/// # use terms::free_group_term::*;
-/// # use terms::literal::*;
+/// # use l_group_formulas::free_group_term::*;
+/// # use l_group_formulas::literal::*;
 /// let term = Literal::from('x') * Literal::from('y');
 /// ```
 /// In this case, `term` encodes the element xy of a free group.
 /// 
 /// Terms constructed using `FreeGrouPTerm::new` automatically get reduced:
 /// ```
-/// # use terms::free_group_term::*;
-/// # use terms::literal::*;
-/// # use terms::*;
+/// # use l_group_formulas::free_group_term::*;
+/// # use l_group_formulas::literal::*;
+/// # use l_group_formulas::*;
 /// let term = Literal::from('x') * Literal::from('x').inverse();
 /// assert_eq!(String::from("e"), term.to_string());
 /// ```
@@ -41,8 +41,8 @@ mod parse_free_group_term;
 /// # Examples
 /// Basic usage:
 /// ```
-/// use terms::literal::Literal;
-/// use terms::free_group_term::FreeGroupTerm;
+/// use l_group_formulas::literal::Literal;
+/// use l_group_formulas::free_group_term::FreeGroupTerm;
 /// // this is equivalent to: 
 /// // let string = "X31yz39";
 /// let string = "X3 1*yz39 ";

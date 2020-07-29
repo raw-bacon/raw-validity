@@ -1,8 +1,8 @@
 use criterion::{criterion_group, criterion_main, Criterion, BenchmarkId};
-use terms::l_group_term::*;
-use terms::literal::*;
+use l_group_formulas::l_group_term::*;
+use l_group_formulas::literal::*;
 use std::collections::BTreeSet;
-use terms::*;
+use l_group_formulas::*;
 use std::iter;
 
     fn meet_of_depth(n: usize) -> LGroupTerm {

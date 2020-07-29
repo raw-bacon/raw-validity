@@ -1,5 +1,5 @@
 use std::io;
-use terms::formula::LGroupFormula;
+use l_group_formulas::formula::LGroupFormula;
 use validity::is_valid;
 
 fn main() -> io::Result<()> {

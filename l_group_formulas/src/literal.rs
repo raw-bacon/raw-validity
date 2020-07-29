@@ -10,13 +10,13 @@ use std::ops::Mul;
 /// Basic usage:
 /// Symbols with ids are okay.
 /// ```
-/// use terms::literal::Literal;
+/// use l_group_formulas::literal::Literal;
 /// let literal = Literal::new('x', 31, true);
 /// assert_eq!(literal, Literal::from("X31"));
 /// ```
 /// So are symbols without.
 /// ```
-/// # use terms::literal::Literal;
+/// # use l_group_formulas::literal::Literal;
 /// let literal = Literal::new('y', 0, false);
 /// assert_eq!(literal, Literal::from("y"));
 /// ```
@@ -24,7 +24,7 @@ use std::ops::Mul;
 /// Alternatively, literals can be constructed from characters.
 /// This sets `id` to zero and `is_inverted` to false.
 /// ```
-/// use terms::literal::*;
+/// use l_group_formulas::literal::*;
 /// let literal1 = Literal::from('x');
 /// let literal2 = Literal::new('x', 0, false);
 /// assert_eq!(literal1, literal2);

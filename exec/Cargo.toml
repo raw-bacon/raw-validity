@@ -7,6 +7,6 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-terms = { path = "../terms" }
+l_group_formulas = { path = "../l_group_formulas" }
 cnf = { path = "../cnf" }
 validity = { path = "../validity" }

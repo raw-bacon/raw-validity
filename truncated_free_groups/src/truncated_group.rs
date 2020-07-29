@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
-use terms::literal::Literal;
-use terms::short_free_group_term::ShortFreeGroupTerm;
-use terms::Term;
+use l_group_formulas::literal::Literal;
+use l_group_formulas::short_free_group_term::ShortFreeGroupTerm;
+use l_group_formulas::Term;
 
 /// Represents the ball of radius 3 in the Cayley graph of the free
 /// group with respect to the standard generating set.
@@ -10,9 +10,9 @@ use terms::Term;
 /// Basic usage:
 /// ```
 /// use std::collections::BTreeSet;
-/// use terms::literal::Literal;
-/// use terms::short_free_group_term::ShortFreeGroupTerm;
-/// use truncated::truncated_group::TruncatedGroup;
+/// use l_group_formulas::literal::Literal;
+/// use l_group_formulas::short_free_group_term::ShortFreeGroupTerm;
+/// use truncated_free_groups::truncated_group::TruncatedGroup;
 /// let mut generators = BTreeSet::new();
 /// generators.insert(Literal::from('x'));
 /// generators.insert(Literal::from('y'));

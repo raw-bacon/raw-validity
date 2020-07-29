@@ -1,12 +1,12 @@
-//use truncated::truncated_group::TruncatedGroup;
-use truncated::tiny_truncated_group::TinyTruncatedGroup;
-use truncated::truncated_subgroup::TruncatedSubgroup;
-use truncated::tiny_truncated_group::ElementsExceptIdentity;
-use terms::short_free_group_term::ShortFreeGroupTerm;
+//use truncated_free_groups::truncated_group::TruncatedGroup;
+use truncated_free_groups::tiny_truncated_group::TinyTruncatedGroup;
+use truncated_free_groups::truncated_subgroup::TruncatedSubgroup;
+use truncated_free_groups::tiny_truncated_group::ElementsExceptIdentity;
+use l_group_formulas::short_free_group_term::ShortFreeGroupTerm;
 use std::collections::BTreeSet;
-// use terms::short_free_group_term::Len;
-use terms::Term;
-use truncated::truncated_subgroup::Insert;
+// use l_group_formulas::short_free_group_term::Len;
+use l_group_formulas::Term;
+use truncated_free_groups::truncated_subgroup::Insert;
 
 
 pub (super) fn extend_to_right_order(elements: Box<BTreeSet<ShortFreeGroupTerm>>, verbose: bool) -> bool {

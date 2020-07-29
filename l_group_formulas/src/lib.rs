@@ -29,7 +29,7 @@ pub mod free_group_term;
 /// in particular the struct `Literal`.
 pub mod literal;
 
-/// The module containing everything about l-group-terms
+/// The module containing everything about l_group_formulas
 /// (but not their cnfs), in particular the struct `LGroupTerm`.
 pub mod l_group_term;
 mod l_group_term_reducing;

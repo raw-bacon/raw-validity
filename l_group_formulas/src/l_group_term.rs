@@ -12,23 +12,23 @@ mod parse_l_group_term;
 /// # Examples
 /// To use this, we want to do some imports:
 /// ```
-/// use terms::free_group_term::*;
-/// use terms::literal::*;
-/// use terms::l_group_term::*;
+/// use l_group_formulas::free_group_term::*;
+/// use l_group_formulas::literal::*;
+/// use l_group_formulas::l_group_term::*;
 /// ```
 /// An `LGroupTerm` be either an `Atom`, i.e.,
 /// ```
-/// # use terms::free_group_term::*;
-/// # use terms::literal::*;
-/// # use terms::l_group_term::*;
+/// # use l_group_formulas::free_group_term::*;
+/// # use l_group_formulas::literal::*;
+/// # use l_group_formulas::l_group_term::*;
 /// let x = FreeGroupTerm::from('x');
 /// let lGroupTerm = LGroupTerm::Atom(x);
 /// ```
 /// a `Meet`, a `Join`, or a `Product`. `Meet`s and `Join`s take `BTreeSet`s as arguments:
 /// ```
-/// # use terms::free_group_term::*;
-/// # use terms::literal::*;
-/// # use terms::l_group_term::*;
+/// # use l_group_formulas::free_group_term::*;
+/// # use l_group_formulas::literal::*;
+/// # use l_group_formulas::l_group_term::*;
 /// use std::collections::BTreeSet;
 /// let mut meetands = BTreeSet::new();
 /// meetands.insert(LGroupTerm::from('x'));
@@ -37,9 +37,9 @@ mod parse_l_group_term;
 /// ```
 /// whereas `Product`s take `Vec<LGroupTerm>`s:
 /// ```
-/// # use terms::free_group_term::*;
-/// # use terms::l_group_term::*;
-/// # use terms::literal::*;
+/// # use l_group_formulas::free_group_term::*;
+/// # use l_group_formulas::l_group_term::*;
+/// # use l_group_formulas::literal::*;
 /// let factors = vec![LGroupTerm::from('x'), LGroupTerm::from('y')];
 /// let product = LGroupTerm::Prod(factors);
 /// ```
@@ -76,16 +76,16 @@ impl From<&str> for LGroupTerm {
     /// literals are multiplied by writing them next to each other (spaces are ignored),
     /// meets are denoted by `^`, joins by `v`, and inverses by prefix `-`. e.g.,
     /// ```
-    /// use terms::l_group_term::LGroupTerm;
-    /// use terms::Term;
+    /// use l_group_formulas::l_group_term::LGroupTerm;
+    /// use l_group_formulas::Term;
     /// let term = LGroupTerm::from('x').inverse();
     /// assert_eq!(term, LGroupTerm::from("-x"));
     /// ```
     /// Multiplication of terms bigger than literals is also by writing them next to
     /// each other:
     /// ```
-    /// # use terms::l_group_term::LGroupTerm;
-    /// # use terms::literal::Literal;
+    /// # use l_group_formulas::l_group_term::LGroupTerm;
+    /// # use l_group_formulas::literal::Literal;
     /// use std::collections::BTreeSet;
     /// let mut meetands = BTreeSet::new();
     /// meetands.insert(LGroupTerm::from('y'));

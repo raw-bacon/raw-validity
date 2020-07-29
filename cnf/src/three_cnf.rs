@@ -1,8 +1,8 @@
 use std::collections::BTreeSet;
-use terms::literal::Literal;
-use terms::free_group_term::{FreeGroupTerm, FREE_GROUP_IDENTITY};
-use terms::short_free_group_term::ShortFreeGroupTerm;
-use terms::l_group_term::LGroupTerm;
+use l_group_formulas::literal::Literal;
+use l_group_formulas::free_group_term::{FreeGroupTerm, FREE_GROUP_IDENTITY};
+use l_group_formulas::short_free_group_term::ShortFreeGroupTerm;
+use l_group_formulas::l_group_term::LGroupTerm;
 use super::normal_cnf::CNF;
 
 /// Represents a meet of joins of free group terms of length at most three.
@@ -14,9 +14,9 @@ use super::normal_cnf::CNF;
 /// # Examples
 /// Sometimes, you get empty `ThreeCNF`s from non-empty terms:
 /// ```
-/// use terms::literal::Literal;
-/// use terms::l_group_term::LGroupTerm;
-/// use terms::free_group_term::FreeGroupTerm;
+/// use l_group_formulas::literal::Literal;
+/// use l_group_formulas::l_group_term::LGroupTerm;
+/// use l_group_formulas::free_group_term::FreeGroupTerm;
 /// use cnf::three_cnf::ThreeCNF;
 /// use std::collections::BTreeSet;
 /// let term = LGroupTerm::from(
@@ -32,9 +32,9 @@ use super::normal_cnf::CNF;
 /// using the trick `e <= r v st` iff `e <= r v sX v xt`, where `x` is a variable that
 /// does not appear in the formula.
 /// ```
-/// # use terms::literal::Literal;
-/// # use terms::l_group_term::LGroupTerm;
-/// # use terms::free_group_term::FreeGroupTerm;
+/// # use l_group_formulas::literal::Literal;
+/// # use l_group_formulas::l_group_term::LGroupTerm;
+/// # use l_group_formulas::free_group_term::FreeGroupTerm;
 /// # use cnf::three_cnf::ThreeCNF;
 /// # use std::collections::BTreeSet;
 /// let joinand1 = LGroupTerm::from(
