@@ -58,8 +58,8 @@ pub fn is_valid(eq: LGroupFormula, verbose: bool) -> bool {
     return true;
 }
 
-pub fn is_valid_from_string(s: &str) {
-    is_valid(LGroupFormula::from(s), false);
+pub fn is_valid_from_string(s: &str) -> bool {
+    is_valid(LGroupFormula::from(s), false)
 }
 
 #[cfg(test)]
