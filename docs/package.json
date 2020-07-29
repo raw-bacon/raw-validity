@@ -1,0 +1,15 @@
+{
+  "name": "webapp",
+  "collaborators": [
+    "Levi Ryffel <levi.ryffel@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "webapp_bg.wasm",
+    "webapp.js",
+    "webapp.d.ts"
+  ],
+  "module": "webapp.js",
+  "types": "webapp.d.ts",
+  "sideEffects": false
+}
