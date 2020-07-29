@@ -6,7 +6,7 @@ members = [
     "exec",
     "truncated",
     "validity",
-    "webapp"
+    "docs"
 ]
 
 [profile.release]
