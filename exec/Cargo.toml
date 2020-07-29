@@ -9,4 +9,4 @@ edition = "2018"
 [dependencies]
 l_group_formulas = "0.1.0"
 l_group_cnf = "0.1.0"
-l_group_validity = { path = "../l_group_validity" }
+l_group_validity = "0.1.0"
