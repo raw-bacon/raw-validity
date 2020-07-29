@@ -1,0 +1,24 @@
+[package]
+name = "docs"
+version = "0.1.0"
+authors = ["Levi Ryffel <levi.ryffel@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+wasm-bindgen = "0.2.67"
+validity = { path = "../validity" }
+
+[dependencies.web-sys]
+version = "0.3.4"
+features = [
+  'Document',
+  'Element',
+  'HtmlElement',
+  'Node',
+  'Window',
+]
+
+[lib]
+crate-type = ["cdylib"]
