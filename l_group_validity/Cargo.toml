@@ -10,6 +10,6 @@ description = "checking validity of l-group (in)equations"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-l_group_formulas = { path = "../l_group_formulas" }
+l_group_formulas = "0.1.0"
 l_group_cnf = { path = "../l_group_cnf" }
 truncated_free_groups = { path = "../truncated_free_groups" }
