@@ -198,7 +198,7 @@ version = "0.1.0"
 dependencies = [
  "cnf",
  "l_group_formulas",
- "validity",
+ "l_group_validity",
 ]
 
 [[package]]
@@ -245,6 +245,15 @@ name = "l_group_formulas"
 version = "0.1.0"
 dependencies = [
  "criterion",
+]
+
+[[package]]
+name = "l_group_validity"
+version = "0.1.0"
+dependencies = [
+ "cnf",
+ "l_group_formulas",
+ "truncated_free_groups",
 ]
 
 [[package]]
@@ -524,15 +533,6 @@ name = "unicode-xid"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7fe0bb3479651439c9112f72b6c505038574c9fbb575ed1bf3b797fa39dd564"
-
-[[package]]
-name = "validity"
-version = "0.1.0"
-dependencies = [
- "cnf",
- "l_group_formulas",
- "truncated_free_groups",
-]
 
 [[package]]
 name = "walkdir"

@@ -1,6 +1,6 @@
 use std::io;
 use l_group_formulas::formula::LGroupFormula;
-use validity::is_valid;
+use l_group_validity::is_valid;
 
 fn main() -> io::Result<()> {
     println!("Please enter an l-group equation or inequation.");

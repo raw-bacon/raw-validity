@@ -1,5 +1,5 @@
 [package]
-name = "validity"
+name = "l_group_validity"
 version = "0.1.0"
 authors = ["Levi Ryffel <levi.ryffel@gmail.com>"]
 edition = "2018"

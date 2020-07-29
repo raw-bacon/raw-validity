@@ -4,7 +4,7 @@ members = [
     "cnf",
     "exec",
     "truncated_free_groups",
-    "validity"
+    "l_group_validity"
 ]
 
 [profile.release]
