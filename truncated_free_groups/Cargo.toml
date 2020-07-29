@@ -3,6 +3,9 @@ name = "truncated_free_groups"
 version = "0.1.0"
 authors = ["Levi Ryffel <levi.ryffel@gmail.com>"]
 edition = "2018"
+repository = "https://github.com/raw-bacon/raw-validity"
+license = "MIT OR Apache-2.0"
+description = "the ball of radius 2 (tiny) or 3 (normal) in a free group"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
