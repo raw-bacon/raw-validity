@@ -17,7 +17,7 @@ use super::normal_cnf::CNF;
 /// use l_group_formulas::literal::Literal;
 /// use l_group_formulas::l_group_term::LGroupTerm;
 /// use l_group_formulas::free_group_term::FreeGroupTerm;
-/// use cnf::three_cnf::ThreeCNF;
+/// use l_group_cnf::three_cnf::ThreeCNF;
 /// use std::collections::BTreeSet;
 /// let term = LGroupTerm::from(
 ///     Literal::from('x') * Literal::from('y') 
@@ -35,7 +35,7 @@ use super::normal_cnf::CNF;
 /// # use l_group_formulas::literal::Literal;
 /// # use l_group_formulas::l_group_term::LGroupTerm;
 /// # use l_group_formulas::free_group_term::FreeGroupTerm;
-/// # use cnf::three_cnf::ThreeCNF;
+/// # use l_group_cnf::three_cnf::ThreeCNF;
 /// # use std::collections::BTreeSet;
 /// let joinand1 = LGroupTerm::from(
 ///     Literal::from('x') * Literal::from('y')

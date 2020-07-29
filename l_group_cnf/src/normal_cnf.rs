@@ -8,7 +8,7 @@ use std::collections::BTreeSet;
 /// Can be constructed from LGroupTerms as follows.
 /// ```
 /// use l_group_formulas::l_group_term::LGroupTerm;
-/// use cnf::normal_cnf::CNF;
+/// use l_group_cnf::normal_cnf::CNF;
 /// let l_group_term = LGroupTerm::from("((x^y)v(x^z))(-(x^(yvz)))");
 /// println!("The CNF of {} is {}", l_group_term.to_string(), CNF::from(l_group_term).to_string());
 /// ```
@@ -93,7 +93,7 @@ impl CNF {
     /// use l_group_formulas::literal::Literal;
     /// use l_group_formulas::free_group_term::FreeGroupTerm;
     /// use std::collections::BTreeSet;
-    /// use cnf::normal_cnf::CNF;
+    /// use l_group_cnf::normal_cnf::CNF;
     /// let mut meetands = BTreeSet::new();
     /// let mut first_meetand = BTreeSet::new();
     /// let mut second_meetand = BTreeSet::new();

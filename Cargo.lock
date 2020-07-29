@@ -74,13 +74,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cnf"
-version = "0.1.0"
-dependencies = [
- "l_group_formulas",
-]
-
-[[package]]
 name = "criterion"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -196,7 +189,7 @@ checksum = "bb1f6b1ce1c140482ea30ddd3335fc0024ac7ee112895426e0a629a6c20adfe3"
 name = "exec"
 version = "0.1.0"
 dependencies = [
- "cnf",
+ "l_group_cnf",
  "l_group_formulas",
  "l_group_validity",
 ]
@@ -241,6 +234,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "l_group_cnf"
+version = "0.1.0"
+dependencies = [
+ "l_group_formulas",
+]
+
+[[package]]
 name = "l_group_formulas"
 version = "0.1.0"
 dependencies = [
@@ -251,7 +251,7 @@ dependencies = [
 name = "l_group_validity"
 version = "0.1.0"
 dependencies = [
- "cnf",
+ "l_group_cnf",
  "l_group_formulas",
  "truncated_free_groups",
 ]
