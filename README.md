@@ -3,7 +3,7 @@
 
 
 # raw-validity
-This is a program checking validity of l-group equations and inequations using an algorithm developed by [George Metcalfe and Amudena Colacito](https://arxiv.org/abs/1809.02574) (it's described after Proposition 2).
+This is a program checking validity of l-group equations and inequations using an algorithm developed by [Almudena Colacito and George Metcalfe](https://arxiv.org/abs/1809.02574) (it's described after Proposition 2).
 
 # Usage
 Try it out with the [webapp](https://raw-bacon.github.io/raw-validity-webapp).
