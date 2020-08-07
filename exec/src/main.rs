@@ -9,7 +9,7 @@ fn main() -> io::Result<()> {
 
     let formula = LGroupFormula::from(buffer.as_str());
     println!("You entered: {}", formula.to_string());
-    let validity_string = match is_valid(formula.clone(), true) {
+    let validity_string = match is_valid(formula.clone()) {
         true => "valid",
         false => "invalid"
     };

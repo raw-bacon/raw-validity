@@ -189,9 +189,9 @@ checksum = "bb1f6b1ce1c140482ea30ddd3335fc0024ac7ee112895426e0a629a6c20adfe3"
 name = "exec"
 version = "0.1.0"
 dependencies = [
- "l_group_cnf 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "l_group_formulas 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "l_group_validity 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "l_group_cnf",
+ "l_group_formulas",
+ "l_group_validity",
 ]
 
 [[package]]
@@ -237,16 +237,7 @@ dependencies = [
 name = "l_group_cnf"
 version = "0.1.0"
 dependencies = [
- "l_group_formulas 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "l_group_cnf"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c8cd9f944e99d81af23a5d44488b7924906e87501de94fdc73ddb8d73d983314"
-dependencies = [
- "l_group_formulas 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "l_group_formulas",
 ]
 
 [[package]]
@@ -257,29 +248,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "l_group_formulas"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e11043982773151eaa8ea388002a6cd150671a5d7c6efbffbf293ddf530e7a9"
-
-[[package]]
 name = "l_group_validity"
 version = "0.1.0"
 dependencies = [
- "l_group_cnf 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "l_group_formulas 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "truncated_free_groups 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "l_group_validity"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "251f82d206eeabf463ce78b6a0804af5e79fdb6c18b43d60f7574b71c4df69a8"
-dependencies = [
- "l_group_cnf 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "l_group_formulas 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "truncated_free_groups 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "l_group_cnf",
+ "l_group_formulas",
+ "truncated_free_groups",
 ]
 
 [[package]]
@@ -545,16 +519,7 @@ dependencies = [
 name = "truncated_free_groups"
 version = "0.1.0"
 dependencies = [
- "l_group_formulas 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "truncated_free_groups"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "694e35de96e78cad3b929be508509b9f563f4221e127dfd5fb1dc248dc3c3ec1"
-dependencies = [
- "l_group_formulas 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "l_group_formulas",
 ]
 
 [[package]]

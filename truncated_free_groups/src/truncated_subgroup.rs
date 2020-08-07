@@ -22,7 +22,7 @@ use l_group_formulas::Term;
 /// gens.insert(Literal::from('x'));
 /// gens.insert(Literal::from('y'));
 /// gens.insert(Literal::from('z'));
-/// let truncated = TruncatedSubgroup::new(Box::new(set), gens, false, false, false);
+/// let truncated = TruncatedSubgroup::new(Box::new(set), gens, false, false);
 /// let mut expected = Box::new(BTreeSet::new());
 /// expected.insert(s);
 /// expected.insert(t);
@@ -41,7 +41,6 @@ pub struct TruncatedSubgroup {
     length_one:              Box<BTreeSet<ShortFreeGroupTerm>>,
     length_two:              Box<BTreeSet<ShortFreeGroupTerm>>,
     length_three:            Box<BTreeSet<ShortFreeGroupTerm>>,
-    verbose:                 bool,
     break_at_identity:       bool
 }
 
@@ -51,7 +50,6 @@ impl TruncatedSubgroup {
         gens:              BTreeSet<Literal>,
         closed:            bool,
         break_at_identity: bool,
-        verbose:           bool
     ) -> TruncatedSubgroup {
         // close gens under inversion
         let mut gens_of_ambient_group = BTreeSet::new();
@@ -123,7 +121,6 @@ impl TruncatedSubgroup {
             length_two:            length_two,
             length_three:          length_three,
             break_at_identity:     break_at_identity,
-            verbose:               verbose
         };
         if !closed { sub.close(); }
         return sub;
@@ -152,16 +149,7 @@ impl Closable for TruncatedSubgroup {
         let mut output = BTreeSet::new();
         let mut found_new_element = true;
         let mut new_elements_buffer: BTreeSet<ShortFreeGroupTerm> = self.previously_new.clone();
-        /*if self.verbose { 
-            println!("\nClosing under multiplication."); 
-        }*/
         while found_new_element {
-            /*if self.verbose {
-                println!("Currently {} elements, {} of which are not checked.", 
-                         self.elements.len(), 
-                         new_elements_buffer.len());
-            }*/
-
             if self.break_at_identity {
                 if self.elements.contains(&ShortFreeGroupTerm::new(None, None, None)) {
                     return output;

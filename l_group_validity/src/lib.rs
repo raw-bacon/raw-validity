@@ -2,35 +2,23 @@ use l_group_formulas::formula::LGroupFormula;
 use std::collections::BTreeSet;
 use l_group_formulas::short_free_group_term::ShortFreeGroupTerm;
 use l_group_cnf::three_cnf::ThreeCNF;
-use l_group_cnf::normal_cnf::CNF;
 use extend_to_right_order::extend_to_right_order;
 use l_group_formulas::Term;
 
 mod extend_to_right_order;
 
 /// Returns whether an `LGroupFormula` holds in all l-groups.
-pub fn is_valid(eq: LGroupFormula, verbose: bool) -> bool {
+pub fn is_valid(eq: LGroupFormula) -> bool {
     let meetands: BTreeSet<BTreeSet<ShortFreeGroupTerm>>;
     meetands = match eq {
         LGroupFormula::LGroupInequation(lhs, rhs) => {
             let three_cnf = ThreeCNF::from(rhs.clone() * lhs.inverse());
-            if verbose {
-                println!("\nThe CNF of the inequality you entered is {}.", CNF::from(rhs.clone() * lhs.inverse()).to_string());
-                println!("\nThe 3-CNF of the inequality you entered is {}.", three_cnf.to_string());
-            }
             three_cnf.meetands
         },
         LGroupFormula::LGroupEquation(lhs, rhs) => {
             let three_cnf_one = ThreeCNF::from(rhs.clone() * lhs.inverse());
             let three_cnf_two = ThreeCNF::from(lhs.clone() * rhs.inverse());
             
-            if verbose {
-                println!("\nThe CNFs of the equality you entered are\n{}\nand\n{}", 
-                         CNF::from(rhs.clone() * lhs.inverse()).to_string(), 
-                         CNF::from(lhs * rhs.inverse()).to_string());
-                println!("\nThe 3-CNFs of the equality you entered are\n{}\nand\n{}.", three_cnf_one.to_string(), three_cnf_two.to_string());
-            }
-
             three_cnf_one.meetands.union(&three_cnf_two.meetands).cloned().collect()
         }
     };
@@ -38,20 +26,7 @@ pub fn is_valid(eq: LGroupFormula, verbose: bool) -> bool {
         return false;
     }
     for meetand in meetands {
-        if verbose {
-            let mut meetand_string = String::new();
-            meetand_string.push('{');
-            for x in &meetand {
-                meetand_string.push_str(x.to_string().as_str());
-                meetand_string.push_str(", ");
-            }
-            meetand_string.pop();
-            meetand_string.pop();
-            meetand_string.push('}');
-            println!("\nChecking whether {} extends to a right order.", meetand_string);
-        }
-
-        if extend_to_right_order(Box::new(meetand), verbose) {
+        if extend_to_right_order(Box::new(meetand)) {
             return false;
         }
     }
@@ -59,7 +34,7 @@ pub fn is_valid(eq: LGroupFormula, verbose: bool) -> bool {
 }
 
 pub fn is_valid_from_string(s: &str) -> bool {
-    is_valid(LGroupFormula::from(s), false)
+    is_valid(LGroupFormula::from(s))
 }
 
 #[cfg(test)]
@@ -67,11 +42,11 @@ mod tests {
     use super::*;
     
     fn check_valid(string: &str) {
-        assert_eq!(true, is_valid(LGroupFormula::from(string), false));
+        assert_eq!(true, is_valid(LGroupFormula::from(string)));
     }
 
     fn check_invalid(string: &str) {
-        assert_eq!(false, is_valid(LGroupFormula::from(string), false));
+        assert_eq!(false, is_valid(LGroupFormula::from(string)));
     }
 
     #[test]
