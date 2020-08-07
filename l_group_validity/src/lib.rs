@@ -4,23 +4,33 @@ use l_group_formulas::short_free_group_term::ShortFreeGroupTerm;
 use l_group_cnf::three_cnf::ThreeCNF;
 use extend_to_right_order::extend_to_right_order;
 use l_group_formulas::Term;
+use split_at_meets::split_at_meets;
 
 mod extend_to_right_order;
 mod split_at_meets;
 
 /// Returns whether an `LGroupFormula` holds in all l-groups.
 pub fn is_valid(eq: LGroupFormula) -> bool {
-    let meetands: BTreeSet<BTreeSet<ShortFreeGroupTerm>>;
-    meetands = match eq {
+    let mut meetands: BTreeSet<BTreeSet<ShortFreeGroupTerm>> = BTreeSet::new();
+    match eq {
         LGroupFormula::LGroupInequation(lhs, rhs) => {
-            let three_cnf = ThreeCNF::from(rhs.clone() * lhs.inverse());
-            three_cnf.meetands
+            let split = split_at_meets(rhs.clone() * lhs.inverse());
+            for x in split {
+                let three_cnf = ThreeCNF::from(x);
+                for meetand in three_cnf.meetands {
+                    meetands.insert(meetand);
+                }
+            }
         },
         LGroupFormula::LGroupEquation(lhs, rhs) => {
-            let three_cnf_one = ThreeCNF::from(rhs.clone() * lhs.inverse());
-            let three_cnf_two = ThreeCNF::from(lhs.clone() * rhs.inverse());
-            
-            three_cnf_one.meetands.union(&three_cnf_two.meetands).cloned().collect()
+            let split1 = split_at_meets(rhs.clone() * lhs.inverse());
+            let split2 = split_at_meets(lhs.clone() * rhs.inverse());
+            for x in split1.union(&split2) {
+                let three_cnf = ThreeCNF::from(x.clone());
+                for meetand in three_cnf.meetands {
+                    meetands.insert(meetand);
+                }
+            }
         }
     };
     if meetands.len() == 0 {
