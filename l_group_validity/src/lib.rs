@@ -6,6 +6,7 @@ use extend_to_right_order::extend_to_right_order;
 use l_group_formulas::Term;
 
 mod extend_to_right_order;
+mod split_at_meets;
 
 /// Returns whether an `LGroupFormula` holds in all l-groups.
 pub fn is_valid(eq: LGroupFormula) -> bool {
