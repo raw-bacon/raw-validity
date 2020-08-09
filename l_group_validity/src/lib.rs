@@ -15,8 +15,12 @@ pub fn is_valid(eq: LGroupFormula) -> bool {
     match eq {
         LGroupFormula::LGroupInequation(lhs, rhs) => {
             let split = split_at_meets(rhs.clone() * lhs.inverse());
+            println!("Split up the inequation e <= {} to form {} meetands.", (rhs.clone() * lhs.inverse()).to_string(), split.len());
             for x in split {
+                println!("Computing the short normal form of {}", x.to_string());
                 let three_cnf = ThreeCNF::from(x);
+                println!("It is {}.\n", three_cnf.to_string());
+
                 for meetand in three_cnf.meetands {
                     meetands.insert(meetand);
                 }
@@ -25,8 +29,10 @@ pub fn is_valid(eq: LGroupFormula) -> bool {
         LGroupFormula::LGroupEquation(lhs, rhs) => {
             let split1 = split_at_meets(rhs.clone() * lhs.inverse());
             let split2 = split_at_meets(lhs.clone() * rhs.inverse());
+            println!("Split up the two inequations into {} meetands.", split1.len() + split2.len());
             for x in split1.union(&split2) {
                 let three_cnf = ThreeCNF::from(x.clone());
+                println!("Constructed the formula {}.", three_cnf.to_string());
                 for meetand in three_cnf.meetands {
                     meetands.insert(meetand);
                 }
@@ -36,7 +42,19 @@ pub fn is_valid(eq: LGroupFormula) -> bool {
     if meetands.len() == 0 {
         return false;
     }
+    println!("Checking all meetands.");
     for meetand in meetands {
+        // verbosity
+        let mut print_string = String::new();
+        for t in &meetand {
+            print_string.push_str(t.to_string().as_str());
+            print_string.push_str(", ");
+        }
+        print_string.pop();
+        print_string.pop();
+        println!("Checking whether {} extends to a right order.", print_string);
+        // end verbosity
+       
         if extend_to_right_order(Box::new(meetand)) {
             return false;
         }

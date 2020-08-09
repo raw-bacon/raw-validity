@@ -58,6 +58,7 @@ pub struct ThreeCNF {
 impl From<LGroupTerm> for ThreeCNF {
     fn from(term: LGroupTerm) -> ThreeCNF {
         let normal_cnf = CNF::from(term);
+        println!("The long normal form is {}.", normal_cnf.to_string());
         let mut new_meetands = BTreeSet::new();
         let mut count = 1;
         for meetand in normal_cnf.meetands {
