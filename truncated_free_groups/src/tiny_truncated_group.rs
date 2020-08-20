@@ -31,7 +31,7 @@ impl TinyTruncatedGroup {
         for x in &new_elements { elements.insert(*x); }
 
         TinyTruncatedGroup {
-            generators: generators,
+            generators,
             elements:   Box::new(elements)
         }
     }
