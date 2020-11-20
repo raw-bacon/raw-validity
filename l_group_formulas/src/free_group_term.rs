@@ -65,6 +65,12 @@ impl FreeGroupTerm {
 
 pub const FREE_GROUP_IDENTITY: FreeGroupTerm = FreeGroupTerm { literals: vec![] };
 
+pub fn len(t: &FreeGroupTerm) -> usize {
+    match t {
+        FreeGroupTerm { literals } => literals.len()
+    }
+}
+
 impl From<Literal> for FreeGroupTerm {
     fn from(x: Literal) -> FreeGroupTerm {
         FreeGroupTerm::new(vec![x])
