@@ -168,6 +168,8 @@ fn to_cnf(term: LGroupTerm) -> LGroupTerm {
             for x in xs.clone() {
                 match &x {
                     // TODO: prioritize this over meets.
+                    // this is not very urgent because the main executable will never
+                    // pass meets anyway.
                     LGroupTerm::Join(joinands) => {
                         let mut rest_right = Vec::new();
                         enum Position { Left, Right }
@@ -203,10 +205,9 @@ fn to_cnf(term: LGroupTerm) -> LGroupTerm {
                                 _ => {}
                             }
                         }
-                        // TODO
                         // The term
                         // rest_left * Join(joinands) * rest_right
-                        // should be transformed to
+                        // is transformed to
                         // Join(rest_left * x, X * joinand1 * y, X * joinand2 * y, ..., X * joinandn * y, Y * rest_right).
                         // Here, x and y are new variables not appearing in the whole term.
                         let mut rng = rand::thread_rng();
