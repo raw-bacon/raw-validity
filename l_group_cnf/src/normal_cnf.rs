@@ -1,8 +1,11 @@
 use l_group_formulas::free_group_term::len;
 use l_group_formulas::free_group_term::FreeGroupTerm;
 use l_group_formulas::l_group_term::LGroupTerm;
+use l_group_formulas::literal::Literal;
 use l_group_formulas::Reducable;
 use std::collections::BTreeSet;
+use l_group_formulas::Term;
+use rand::Rng;
 
 /// Represents a meet of joins of free group terms.
 /// 
@@ -206,7 +209,24 @@ fn to_cnf(term: LGroupTerm) -> LGroupTerm {
                         // should be transformed to
                         // Join(rest_left * x, X * joinand1 * y, X * joinand2 * y, ..., X * joinandn * y, Y * rest_right).
                         // Here, x and y are new variables not appearing in the whole term.
-                        todo!()
+                        let mut rng = rand::thread_rng();
+                        let x = Literal::new('v', rng.gen::<usize>(), false);
+                        let y = Literal::new('v', rng.gen::<usize>(), false);
+                        let mut new_joinands = BTreeSet::new();
+                        rest_left.push(LGroupTerm::Atom(FreeGroupTerm::from(x)));
+                        new_joinands.insert(to_cnf(LGroupTerm::Prod(rest_left).reduced()));
+                        let mut new_rest_right = vec![LGroupTerm::Atom(FreeGroupTerm::from(y.inverse()))];
+                        for t in rest_right {
+                            new_rest_right.push(t);
+                        }
+                        new_joinands.insert(to_cnf(LGroupTerm::Prod(new_rest_right).reduced()));
+                        for joinand in joinands {
+                            let new_factors = vec![LGroupTerm::from(x.inverse()),
+                                                   joinand.clone(),
+                                                   LGroupTerm::from(y)];
+                            new_joinands.insert(to_cnf(LGroupTerm::Prod(new_factors).reduced()));
+                        }
+                        return to_cnf(LGroupTerm::Join(new_joinands).reduced())
                     },
                     LGroupTerm::Meet(meetands) => {
                         let mut rest_right = Vec::new();

@@ -11,3 +11,4 @@ description = "meets of joins of free group terms"
 
 [dependencies]
 l_group_formulas = { path = "../l_group_formulas" }
+rand = "0.7.3"
