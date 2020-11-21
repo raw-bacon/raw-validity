@@ -106,6 +106,9 @@ impl ToString for ThreeCNF {
     }
 }
 
+/// applies the rule
+/// `p v sx v Xt / p v st`
+/// to avoid long group terms
 fn split(term: FreeGroupTerm, counter: &mut usize) -> BTreeSet<ShortFreeGroupTerm> {
     let mut output = BTreeSet::new();
     if term.literals.len() <= 3 {

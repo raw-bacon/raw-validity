@@ -1,7 +1,11 @@
+use l_group_formulas::free_group_term::len;
 use l_group_formulas::free_group_term::FreeGroupTerm;
 use l_group_formulas::l_group_term::LGroupTerm;
+use l_group_formulas::literal::Literal;
 use l_group_formulas::Reducable;
 use std::collections::BTreeSet;
+use l_group_formulas::Term;
+use rand::Rng;
 
 /// Represents a meet of joins of free group terms.
 /// 
@@ -80,7 +84,7 @@ impl From<LGroupTerm> for CNF {
             }
             LGroupTerm::Prod(_) => panic!("CNF failed")
         };
-        CNF { meetands: meetands }
+        CNF { meetands }
     }
 }
 
@@ -114,14 +118,14 @@ impl CNF {
     /// assert_eq!(String::from("(w v z) ^ (x v y)"), CNF::new(meetands).to_string());
     /// ```
     pub fn new(meetands: BTreeSet<BTreeSet<FreeGroupTerm>>) -> CNF {
-        CNF { meetands: meetands }
+        CNF { meetands }
     }
 }
 
 fn to_cnf(term: LGroupTerm) -> LGroupTerm {
-    if is_in_cnf(&term) {
-        return term;
-    }
+    // if is_in_cnf(&term) {
+    //     return term;
+    // }
 
     match term {
         LGroupTerm::Atom(_) => { return term }
@@ -160,9 +164,70 @@ fn to_cnf(term: LGroupTerm) -> LGroupTerm {
             return LGroupTerm::Join(new_joinands).reduced();
         },
         LGroupTerm::Prod(xs) => {
-            let mut rest_left = Vec::new();
+            let mut rest_left : Vec<LGroupTerm> = Vec::new();
             for x in xs.clone() {
                 match &x {
+                    // TODO: prioritize this over meets.
+                    LGroupTerm::Join(joinands) => {
+                        let mut rest_right = Vec::new();
+                        enum Position { Left, Right }
+                        let mut pos = Position::Left;
+                        for y in xs {
+                            match pos {
+                                Position::Left => {
+                                    if x == y { pos = Position::Right; }
+                                }
+                                Position::Right => {
+                                    rest_right.push(y);
+                                }
+                            }
+                        }
+
+                        // distribute if rest_left and rest_right are both length 1 atoms
+                        if rest_left.len() == 1 && rest_right.len() == 1 {
+                            let left = rest_left.first().unwrap();
+                            let right = rest_right.first().unwrap();
+                            match (&left, &right) {
+                                (LGroupTerm::Atom(literals_left), LGroupTerm::Atom(literals_right)) => {
+                                    if len(literals_left) == 1 && len(literals_right) == 1 {
+                                        let mut new_joinands = BTreeSet::new();
+                                        for joinand in joinands {
+                                            let vec = vec![LGroupTerm::Prod(rest_left.clone()),
+                                                           joinand.clone(),
+                                                           LGroupTerm::Prod(rest_right.clone())];
+                                            new_joinands.insert(to_cnf(LGroupTerm::Prod(vec).reduced()));
+                                        }
+                                        return to_cnf(LGroupTerm::Join(new_joinands));
+                                   }
+                                },
+                                _ => {}
+                            }
+                        }
+                        // TODO
+                        // The term
+                        // rest_left * Join(joinands) * rest_right
+                        // should be transformed to
+                        // Join(rest_left * x, X * joinand1 * y, X * joinand2 * y, ..., X * joinandn * y, Y * rest_right).
+                        // Here, x and y are new variables not appearing in the whole term.
+                        let mut rng = rand::thread_rng();
+                        let x = Literal::new('v', rng.gen::<usize>(), false);
+                        let y = Literal::new('v', rng.gen::<usize>(), false);
+                        let mut new_joinands = BTreeSet::new();
+                        rest_left.push(LGroupTerm::Atom(FreeGroupTerm::from(x)));
+                        new_joinands.insert(to_cnf(LGroupTerm::Prod(rest_left).reduced()));
+                        let mut new_rest_right = vec![LGroupTerm::Atom(FreeGroupTerm::from(y.inverse()))];
+                        for t in rest_right {
+                            new_rest_right.push(t);
+                        }
+                        new_joinands.insert(to_cnf(LGroupTerm::Prod(new_rest_right).reduced()));
+                        for joinand in joinands {
+                            let new_factors = vec![LGroupTerm::from(x.inverse()),
+                                                   joinand.clone(),
+                                                   LGroupTerm::from(y)];
+                            new_joinands.insert(to_cnf(LGroupTerm::Prod(new_factors).reduced()));
+                        }
+                        return to_cnf(LGroupTerm::Join(new_joinands).reduced())
+                    },
                     LGroupTerm::Meet(meetands) => {
                         let mut rest_right = Vec::new();
                         enum Position { Left, Right }
@@ -185,28 +250,6 @@ fn to_cnf(term: LGroupTerm) -> LGroupTerm {
                         }
                         return to_cnf(LGroupTerm::Meet(new_meetands));
                     },
-                    LGroupTerm::Join(joinands) => {
-                        let mut rest_right = Vec::new();
-                        enum Position { Left, Right }
-                        let mut pos = Position::Left;
-                        for y in xs {
-                            match pos {
-                                Position::Left => {
-                                    if x == y { pos = Position::Right; }
-                                }
-                                Position::Right => {
-                                    rest_right.push(y);
-                                }
-                            }
-                        }
-                        // term = prod(rest_left, join(joinands), rest_right)
-                        let mut new_joinands = BTreeSet::new();
-                        for joinand in joinands {
-                            let vec = vec![LGroupTerm::Prod(rest_left.clone()), joinand.clone(), LGroupTerm::Prod(rest_right.clone())];
-                            new_joinands.insert(to_cnf(LGroupTerm::Prod(vec).reduced()));
-                        }
-                        return to_cnf(LGroupTerm::Join(new_joinands));
-                    },
                     _ => {
                         rest_left.push(x);
                     }
@@ -220,31 +263,31 @@ fn to_cnf(term: LGroupTerm) -> LGroupTerm {
     };
 }
 
-fn is_in_cnf(term: &LGroupTerm) -> bool {
-    match term {
-        LGroupTerm::Prod(_) => return false,
-        LGroupTerm::Atom(_) => return true,
-        LGroupTerm::Join(xs) => {
-            for x in xs {
-                match x {
-                    LGroupTerm::Atom(_) => {},
-                    _ => return false
-                };
-            }
-        }
-        LGroupTerm::Meet(xs) => {
-            for x in xs {
-                match x {
-                    LGroupTerm::Meet(_) | LGroupTerm::Prod(_) => return false,
-                    LGroupTerm::Atom(_) | LGroupTerm::Join(_) => {
-                        if !is_in_cnf(x) { return false };
-                    }
-                }
-            }
-        }
-    };
-    return true;
-}
+// fn is_in_cnf(term: &LGroupTerm) -> bool {
+//     match term {
+//         LGroupTerm::Prod(_) => return false,
+//         LGroupTerm::Atom(_) => return true,
+//         LGroupTerm::Join(xs) => {
+//             for x in xs {
+//                 match x {
+//                     LGroupTerm::Atom(_) => {},
+//                     _ => return false
+//                 };
+//             }
+//         }
+//         LGroupTerm::Meet(xs) => {
+//             for x in xs {
+//                 match x {
+//                     LGroupTerm::Meet(_) | LGroupTerm::Prod(_) => return false,
+//                     LGroupTerm::Atom(_) | LGroupTerm::Join(_) => {
+//                         if !is_in_cnf(x) { return false };
+//                     }
+//                 }
+//             }
+//         }
+//     };
+//     return true;
+// }
 
 #[cfg(test)]
 mod tests {

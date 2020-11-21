@@ -39,9 +39,9 @@ pub struct Literal {
 impl Literal {
     pub fn new(character: char, id: usize, is_inverted: bool) -> Literal {
         Literal {
-            character: character,
-            id: id,
-            is_inverted: is_inverted
+            character,
+            id,
+            is_inverted
         }
     }
 }
