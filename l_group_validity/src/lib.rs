@@ -19,7 +19,11 @@ pub fn is_valid(eq: LGroupFormula) -> bool {
             for x in split {
                 println!("Computing the short normal form of {}", x.to_string());
                 let three_cnf = ThreeCNF::from(x);
-                println!("It is {}.\n", three_cnf.to_string());
+                println!("The three-normal form is {}.\n", three_cnf.to_string());
+
+                if three_cnf.meetands.len() == 0 {
+                    return false
+                }
 
                 for meetand in three_cnf.meetands {
                     meetands.insert(meetand);
@@ -39,9 +43,11 @@ pub fn is_valid(eq: LGroupFormula) -> bool {
             }
         }
     };
+
     if meetands.len() == 0 {
         return false;
     }
+    
     println!("Checking all meetands.");
     for meetand in meetands {
         // verbosity

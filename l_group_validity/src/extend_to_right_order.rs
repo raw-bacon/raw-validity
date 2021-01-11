@@ -10,6 +10,10 @@ use truncated_free_groups::truncated_subgroup::Insert;
 
 
 pub (super) fn extend_to_right_order(elements: Box<BTreeSet<ShortFreeGroupTerm>>) -> bool {
+    if elements.len() == 0 {
+        return true;
+    }
+
     let mut all_literals = BTreeSet::new();
     for x in &*elements {
         match (x.left, x.mid, x.right) {
