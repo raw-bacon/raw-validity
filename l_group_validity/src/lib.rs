@@ -152,4 +152,9 @@ mod tests {
     fn test_trivial() {
         check_valid("e=e");
     }
+
+    #[test]
+    fn test_initial_split_bug() {
+        check_invalid("e <= e ^ x");
+    }
 }
